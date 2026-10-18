@@ -214,64 +214,81 @@ function initTheme() {
   }
 }
 
-/* ---------- 卡片光效 ----------
-   只保留一套逻辑：每帧最多一次 layout 读取，鼠标静止时不读 DOM。
-   （旧版是「每张卡各挂一个 mousemove + 全局再算一遍」，两套代码抢同一个 CSS 变量） */
+/* ---------- 跟随鼠标的光感 ----------
+   作用对象：「关于我」卡片 + 所有项目卡片。
+   强度只由「鼠标到卡片边缘的距离」决定，所以鼠标在页面任意位置移动都会
+   点亮附近的卡片；每帧最多一次布局读取，鼠标静止时完全不读 DOM。
+   注意：不因 prefers-reduced-motion 关闭——这是指针反馈，不是自动播放的动画。 */
 function initCardProximity() {
-  if (prefersReducedMotion()) return;
-  const grid = document.getElementById("projects-grid");
-  if (!grid) return;
+  const RADIUS = 260;   // 距卡片边界多远开始有光（px）
+  const FALLOFF = 1.7;  // 越大光衰减越快，光斑越集中
+  const GLOW_SELECTOR = ".card, .about-card";
 
-  const BASE = 0.18;   // 进入项目区后每张卡片的常驻微光
-  const BOOST = 0.82;  // 距光标最近时额外叠加的亮度
-  const RADIUS = 110;  // 距光标多近开始额外增亮（px）
-  const MARGIN = 60;   // 项目区上下扩展的感应范围
-
-  let cards = [];
+  let targets = [];
+  let items = [];
   let raf = null;
-  let lastScrollY = -1;
+  let dirty = true;
+  let lastX = null;
+  let lastY = null;
+
+  function collect() {
+    targets = Array.prototype.slice.call(document.querySelectorAll(GLOW_SELECTOR));
+    items = [];
+    dirty = true;
+  }
 
   function measure(force) {
-    if (!force && window.scrollY === lastScrollY && cards.length) return;
-    lastScrollY = window.scrollY;
-    cards = Array.prototype.map.call(grid.querySelectorAll(".card"), (el) => ({
-      el: el,
-      r: el.getBoundingClientRect()
-    }));
+    if (!force && !dirty && items.length) return;
+    dirty = false;
+    items = targets.map((el) => ({ el: el, r: el.getBoundingClientRect() }));
+  }
+
+  function paint(cx, cy) {
+    measure(false);
+    for (let i = 0; i < items.length; i++) {
+      const el = items[i].el;
+      const r = items[i].r;
+      const dx = Math.max(r.left - cx, 0, cx - r.right);
+      const dy = Math.max(r.top - cy, 0, cy - r.bottom);
+      const dist = Math.hypot(dx, dy);
+      const glow = dist < RADIUS ? Math.pow(1 - dist / RADIUS, FALLOFF) : 0;
+      if (glow > 0) {
+        // 光斑位置夹在卡片内，让边缘聚光朝向鼠标
+        const x = Math.max(0, Math.min(cx - r.left, r.width));
+        const y = Math.max(0, Math.min(cy - r.top, r.height));
+        el.style.setProperty("--mx", x + "px");
+        el.style.setProperty("--my", y + "px");
+      }
+      el.style.setProperty("--glow", glow.toFixed(3));
+    }
   }
 
   function onMove(event) {
+    lastX = event.clientX;
+    lastY = event.clientY;
     if (raf) return;
-    const cx = event.clientX;
-    const cy = event.clientY;
     raf = requestAnimationFrame(() => {
       raf = null;
-      measure(false);
-      const gridRect = grid.getBoundingClientRect();
-      const inSection = cy >= gridRect.top - MARGIN && cy <= gridRect.bottom + MARGIN;
-      for (let i = 0; i < cards.length; i++) {
-        const el = cards[i].el;
-        const r = cards[i].r;
-        const x = Math.max(0, Math.min(cx - r.left, r.width));
-        const y = Math.max(0, Math.min(cy - r.top, r.height));
-        const dx = Math.max(r.left - cx, 0, cx - r.right);
-        const dy = Math.max(r.top - cy, 0, cy - r.bottom);
-        const dist = Math.hypot(dx, dy);
-        const near = dist < RADIUS ? 1 - dist / RADIUS : 0;
-        const glow = inSection ? Math.min(1, BASE + near * BOOST) : 0;
-        el.style.setProperty("--mx", x + "px");
-        el.style.setProperty("--my", y + "px");
-        el.style.setProperty("--glow", glow.toFixed(3));
-      }
+      if (lastX === null) return;
+      paint(lastX, lastY);
     });
   }
 
+  // 项目卡片被重新渲染后，DOM 节点换了，需要重新收集
+  function refresh() {
+    collect();
+    if (lastX !== null) paint(lastX, lastY);
+  }
+
+  collect();
+  measure(true);
+
   document.addEventListener("mousemove", onMove, { passive: true });
-  window.addEventListener("resize", () => measure(true), { passive: true });
-  window.addEventListener("scroll", () => measure(true), { passive: true });
-  window.addEventListener("qi-neo:repos-rendered", () => measure(true));
+  window.addEventListener("scroll", () => { dirty = true; }, { passive: true });
+  window.addEventListener("resize", () => { dirty = true; }, { passive: true });
+  window.addEventListener("qi-neo:repos-rendered", refresh);
   document.addEventListener("mouseleave", () => {
-    for (let i = 0; i < cards.length; i++) cards[i].el.style.setProperty("--glow", "0");
+    for (let i = 0; i < items.length; i++) items[i].el.style.setProperty("--glow", "0");
   });
 }
 
