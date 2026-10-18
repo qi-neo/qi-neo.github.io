@@ -3,32 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="referrer" content="no-referrer" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com https://qi-neo-home.app.workbuddy.host" />
-  <meta name="description" content="qi-neo · 嵌入式软件 / C++ / ROS2 个人主页与开源项目展示" />
-  <title>qi-neo · 个人主页</title>
-  <link rel="preconnect" href="https://api.github.com" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>" />
-  <link rel="stylesheet" href="assets/style.css" />
+
+  <!-- 安全策略：无第三方脚本；内联脚本用 sha256 白名单放行（构建脚本自动生成 hash） -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' 'sha256-xRIDjpOdqq3kQjRgF/hK3IMXFdKYnE68BAMS3r0YZis=' 'sha256-cf//sC6BXQjlo0ifty4vtFqnFvcjYjM+qZ/bFruzSr8='; style-src 'self'; img-src 'self' data:; connect-src 'self'" />
+
+  <!-- 首屏主题：必须在样式表之前执行，避免浅色系统用户先看到暗色再闪一下 -->
+  <script id="theme-init">
+  (function () {
+    try {
+      var saved = localStorage.getItem("theme");
+      var light = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+      document.documentElement.setAttribute("data-theme", saved || (light ? "light" : "dark"));
+    } catch (e) {}
+  })();
+  </script>
+
+  <title>qi-neo · 嵌入式软件 / C++ / ROS2</title>
+  <meta name="description" content="qi-neo（王瑛琦）· 嵌入式软件与 C++ / ROS2 学生开发者，专注激光雷达驱动、控制算法与边缘部署。这里收录我的开源项目与作品。" />
+  <meta name="author" content="qi-neo" />
+  <link rel="canonical" href="https://qi-neo.github.io/" />
+
+  <!-- 社交分享卡片（微信 / X / Slack / Telegram 等） -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="qi-neo" />
+  <meta property="og:url" content="https://qi-neo.github.io/" />
+  <meta property="og:title" content="qi-neo · 嵌入式软件 / C++ / ROS2" />
+  <meta property="og:description" content="激光雷达驱动、主动悬架、边缘部署 —— 来自 qi-neo 的开源项目与作品。" />
+  <meta property="og:image" content="https://qi-neo.github.io/assets/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="qi-neo 个人主页封面" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="qi-neo · 嵌入式软件 / C++ / ROS2" />
+  <meta name="twitter:description" content="激光雷达驱动、主动悬架、边缘部署 —— 开源项目与作品。" />
+  <meta name="twitter:image" content="https://qi-neo.github.io/assets/og-cover.png" />
+
+  <!-- 移动端浏览器配色、图标、PWA -->
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <link rel="stylesheet" href="/assets/style.css?v=0ab2eecf" />
+
+  <!-- 结构化数据：告诉搜索引擎这是一个人 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "qi-neo",
+    "alternateName": "王瑛琦",
+    "url": "https://qi-neo.github.io/",
+    "image": "https://qi-neo.github.io/assets/og-cover.png",
+    "jobTitle": "嵌入式软件工程师",
+    "description": "嵌入式软件与 C++ / ROS2 学生开发者，专注激光雷达驱动、控制算法与边缘部署。",
+    "knowsAbout": ["C++", "ROS2", "嵌入式系统", "激光雷达", "边缘计算", "Qt"],
+    "sameAs": ["https://github.com/qi-neo"]
+  }
+  </script>
 </head>
 <body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
   <header class="nav">
-    <a class="brand" href="#top">
-      <span class="brand-mark">Q</span>
+    <a class="brand" href="#main">
+      <span class="brand-mark" aria-hidden="true">Q</span>
       <span class="brand-text">qi-neo</span>
     </a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="主导航">
       <a href="#about">关于</a>
       <a href="#projects">项目</a>
       <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub ↗</a>
     </nav>
-    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题" title="切换深色 / 浅色">
-      <span class="icon-dark">☀️</span>
-      <span class="icon-light">🌙</span>
+    <button id="theme-toggle" class="theme-toggle" type="button"
+            aria-label="切换到浅色主题" aria-pressed="true"
+            title="切换深色 / 浅色">
+      <span class="icon-dark" aria-hidden="true">☀️</span>
+      <span class="icon-light" aria-hidden="true">🌙</span>
     </button>
   </header>
 
-  <main id="top">
+  <main id="main">
     <section class="hero">
       <div class="hero-inner">
         <p class="hero-eyebrow">嵌入式软件工程师 · 学生开发者</p>
@@ -42,8 +100,8 @@
           <a class="btn btn-ghost" href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 主页 ↗</a>
         </div>
         <ul class="hero-stats" id="hero-stats">
-          <li><strong data-stat="repos">—</strong><span>公开仓库</span></li>
-          <li><strong data-stat="stars">—</strong><span>累计 Star</span></li>
+          <li><strong data-stat="repos">3</strong><span>公开仓库</span></li>
+          <li><strong data-stat="stars">3</strong><span>累计 Star</span></li>
           <li><strong data-stat="lang">C++</strong><span>主力语言</span></li>
         </ul>
       </div>
@@ -58,8 +116,8 @@
           也在折腾激光雷达、边缘 AI 部署这类硬核活儿。
         </p>
         <p>
-          这个站点目前主要收录我的 <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 开源项目</a>，
-          项目列表会实时从 GitHub 拉取，自动保持最新。后续还会逐步补充简历、博客和作品集。
+          这个站点收录我的 <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 开源项目</a>，
+          项目列表在构建时自动同步，保持最新。后续还会逐步补充简历、博客和作品集。
         </p>
         <div class="tags">
           <span class="tag">C++</span>
@@ -75,31 +133,72 @@
     <section id="projects" class="section">
       <div class="section-head">
         <h2 class="section-title">开源项目</h2>
-        <span id="projects-status" class="projects-status">加载中…</span>
+        <span id="projects-status" class="projects-status" aria-live="polite" aria-atomic="true">构建时快照 · 共 3 个项目</span>
       </div>
       <div id="projects-grid" class="projects-grid">
-        <!-- 卡片由 app.js 注入；下方为兜底骨架 -->
+        <!-- REPOS:START —— 由 scripts/build.py 自动生成，请勿手改 -->
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">⚙️</span>
+            <a class="card-name" href="https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor" target="_blank" rel="noopener">maixcam-esp32-tcp-stepper-motor</a>
+          </div>
+          <p class="card-desc">Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机</p>
+          <div class="card-meta">
+            <span class="lang"><span class="lang-dot lang-cpp" aria-hidden="true"></span>C++</span>
+            <span class="card-stars">★ 2</span>
+            <span>今天更新</span>
+          </div>
+          <div class="card-foot">
+            <a class="card-link" href="https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor" target="_blank" rel="noopener">在 GitHub 查看 ↗</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">📡</span>
+            <a class="card-name" href="https://github.com/qi-neo/active-suspension-lidar-preview" target="_blank" rel="noopener">active-suspension-lidar-preview</a>
+          </div>
+          <p class="card-desc">基于激光雷达路面预瞄的主动悬架系统</p>
+          <div class="card-meta">
+            <span class="lang"><span class="lang-dot lang-cpp" aria-hidden="true"></span>C++</span>
+            <span class="card-stars">★ 1</span>
+            <span>今天更新</span>
+          </div>
+          <div class="card-foot">
+            <a class="card-link" href="https://github.com/qi-neo/active-suspension-lidar-preview" target="_blank" rel="noopener">在 GitHub 查看 ↗</a>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-top">
+            <span class="card-icon" aria-hidden="true">📡</span>
+            <a class="card-name" href="https://github.com/qi-neo/unilidar-driver" target="_blank" rel="noopener">unilidar-driver</a>
+          </div>
+          <p class="card-desc">Unitree L1 LiDAR ROS2 driver with self-implemented UDP protocol parsing — no official static library</p>
+          <div class="card-meta">
+            <span class="lang"><span class="lang-dot lang-cpp" aria-hidden="true"></span>C++</span>
+            <span class="card-stars">★ 0</span>
+            <span>3 天前更新</span>
+          </div>
+          <div class="card-foot">
+            <a class="card-link" href="https://github.com/qi-neo/unilidar-driver" target="_blank" rel="noopener">在 GitHub 查看 ↗</a>
+          </div>
+        </article>
+        <!-- REPOS:END -->
       </div>
     </section>
   </main>
 
   <nav class="dock" id="dock" aria-label="快捷导航">
-    <a class="dock-item" href="#top" data-tip="首页">🏠</a>
-    <a class="dock-item" href="#about" data-tip="关于">👤</a>
-    <a class="dock-item" href="#projects" data-tip="项目">💻</a>
-    <a class="dock-item" href="https://github.com/qi-neo" target="_blank" rel="noopener" data-tip="GitHub">🐙</a>
+    <a class="dock-item" href="#main" data-tip="首页" aria-label="回到首页">🏠</a>
+    <a class="dock-item" href="#about" data-tip="关于" aria-label="关于我">👤</a>
+    <a class="dock-item" href="#projects" data-tip="项目" aria-label="开源项目">💻</a>
+    <a class="dock-item" href="https://github.com/qi-neo" target="_blank" rel="noopener" data-tip="GitHub" aria-label="GitHub 主页">🐙</a>
   </nav>
-
-  <!-- 反爬虫蜜罐：正常用户不可见，仅用于诱捕自动化抓取脚本 -->
-  <a class="hp-trap" href="/.well-known/decoy-data" rel="nofollow noindex" aria-hidden="true">decoy</a>
 
   <footer class="footer">
     <p>© <span id="year"></span> qi-neo · 用 ❤️ 和 C++ 搭建</p>
-    <p class="footer-sub">本页项目数据来自 GitHub API，实时同步 · 由 WorkBuddy 生成</p>
+    <p class="footer-sub">项目数据在构建时同步 · 由 GitHub Pages 托管</p>
   </footer>
 
-  <!-- 云服务 SDK（CDN 全局变量 WorkBuddyCloud，由 publicConfig 初始化） -->
-  <script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
-  <script src="assets/app.js"></script>
+  <script src="/assets/app.js?v=a16975d4" defer></script>
 </body>
 </html>

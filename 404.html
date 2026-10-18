@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' 'sha256-xRIDjpOdqq3kQjRgF/hK3IMXFdKYnE68BAMS3r0YZis='; style-src 'self'; img-src 'self' data:; connect-src 'self'" />
+
+  <script id="theme-init">
+  (function () {
+    try {
+      var saved = localStorage.getItem("theme");
+      var light = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+      document.documentElement.setAttribute("data-theme", saved || (light ? "light" : "dark"));
+    } catch (e) {}
+  })();
+  </script>
+
+  <title>404 · 页面不存在 | qi-neo</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/assets/style.css?v=0ab2eecf" />
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">Q</span>
+      <span class="brand-text">qi-neo</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="/#about">关于</a>
+      <a href="/#projects">项目</a>
+      <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main id="main" class="section">
+    <h1 class="section-title">404 · 页面不存在</h1>
+    <div class="about-card">
+      <p>这个地址没有对应的页面，可能是链接写错了，或者内容已经搬家。</p>
+      <p>可以直接回到首页，或者去 GitHub 看看我在折腾什么。</p>
+      <p>
+        <a class="btn btn-primary" href="/">回到首页</a>
+        <a class="btn btn-ghost" href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 主页 ↗</a>
+      </p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© <span>2026</span> qi-neo · 用 ❤️ 和 C++ 搭建</p>
+  </footer>
+</body>
+</html>

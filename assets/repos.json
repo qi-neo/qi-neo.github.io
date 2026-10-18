@@ -1,0 +1,33 @@
+{
+  "username": "qi-neo",
+  "updated_at": "2026-10-18T14:45:30Z",
+  "repos": [
+    {
+      "name": "maixcam-esp32-tcp-stepper-motor",
+      "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
+      "language": "C++",
+      "stargazers_count": 2,
+      "updated_at": "2026-10-18T14:36:00Z",
+      "html_url": "https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor",
+      "icon": "⚙️"
+    },
+    {
+      "name": "active-suspension-lidar-preview",
+      "description": "基于激光雷达路面预瞄的主动悬架系统",
+      "language": "C++",
+      "stargazers_count": 1,
+      "updated_at": "2026-10-18T14:17:44Z",
+      "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
+      "icon": "📡"
+    },
+    {
+      "name": "unilidar-driver",
+      "description": "Unitree L1 LiDAR ROS2 driver with self-implemented UDP protocol parsing — no official static library",
+      "language": "C++",
+      "stargazers_count": 0,
+      "updated_at": "2026-10-15T08:43:53Z",
+      "html_url": "https://github.com/qi-neo/unilidar-driver",
+      "icon": "📡"
+    }
+  ]
+}

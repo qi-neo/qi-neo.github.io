@@ -12,6 +12,7 @@
   --maxw: 1080px;
   --gx: 50%;
   --gy: 50%;
+  color-scheme: dark;
 }
 
 [data-theme="light"] {
@@ -24,6 +25,7 @@
   --accent: #0969da;
   --accent-2: #1a7f37;
   --shadow: 0 8px 30px rgba(140, 149, 159, 0.25);
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,6 +48,24 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+/* ---------- 可访问性：键盘焦点与跳转链接 ---------- */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 0 0 12px 0;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+.skip-link:focus { left: 0; text-decoration: none; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+.skip-link:focus-visible { outline-offset: 2px; }
+
 /* ---------- Nav ---------- */
 .nav {
   position: sticky;
@@ -55,9 +75,13 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 16px;
   padding: 14px max(20px, 5vw);
+  /* 先给不透明回退色：部分老内核（含旧版微信 WebView）不支持 color-mix，
+     没有回退时这条 background 会整条失效，导航栏直接变透明 */
+  background: var(--bg);
   background: color-mix(in srgb, var(--bg) 70%, transparent);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--border);
   border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
 }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); }
@@ -74,6 +98,7 @@ a:hover { text-decoration: underline; }
 .nav-links a:hover { color: var(--text); text-decoration: none; }
 .theme-toggle {
   cursor: pointer; color: var(--text); border-radius: 10px; padding: 6px 10px; font-size:16px;
+  background: var(--bg-soft);
   background: color-mix(in srgb, var(--bg-soft) 30%, transparent);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -104,6 +129,7 @@ a:hover { text-decoration: underline; }
   position: relative; overflow: hidden;
   display: inline-block; padding: 12px 22px; border-radius: 14px;
   font-weight: 600; font-size: 15px; color: var(--text); cursor: pointer;
+  background: var(--bg-soft);
   background: color-mix(in srgb, var(--bg-soft) 30%, transparent);
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
@@ -215,6 +241,20 @@ a:hover { text-decoration: underline; }
 .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
 .card-link { font-size: 13px; font-weight: 600; }
 
+/* 语言圆点配色：静态卡片不能用内联 style（CSP 限制），统一走 class */
+.lang-dot.lang-cpp { background: #f34b7d; }
+.lang-dot.lang-c { background: #555555; }
+.lang-dot.lang-csharp { background: #178600; }
+.lang-dot.lang-python { background: #3572A5; }
+.lang-dot.lang-js { background: #f1e05a; }
+.lang-dot.lang-ts { background: #3178c6; }
+.lang-dot.lang-shell { background: #89e051; }
+.lang-dot.lang-cmake { background: #DA3434; }
+.lang-dot.lang-html { background: #e34c26; }
+.lang-dot.lang-rust { background: #dea584; }
+.lang-dot.lang-go { background: #00ADD8; }
+.lang-dot.lang-other { background: var(--text-dim); }
+
 /* ---------- 苹果风格悬浮底边栏（Dock） ---------- */
 .dock {
   position: fixed;
@@ -225,9 +265,11 @@ a:hover { text-decoration: underline; }
   align-items: flex-end;
   gap: 6px;
   padding: 10px 14px;
+  background: var(--bg-soft);
   background: color-mix(in srgb, var(--bg-soft) 55%, transparent);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid var(--border);
   border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
   border-radius: 24px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45),
@@ -248,6 +290,7 @@ a:hover { text-decoration: underline; }
   color: var(--text);
   text-decoration: none;
   transform-origin: bottom center;
+  background: var(--bg-soft);
   background: color-mix(in srgb, var(--bg-soft) 25%, transparent);
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
@@ -286,18 +329,6 @@ a:hover { text-decoration: underline; }
 }
 .dock-item:hover::after { opacity: 1; transform: translateX(-50%) scale(1); }
 
-/* ---------- 反爬虫蜜罐（对正常用户不可见） ---------- */
-.hp-trap {
-  position: absolute;
-  left: -99999px;
-  top: -99999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* ---------- Footer ---------- */
 .footer {
   max-width: var(--maxw); margin: 60px auto 110px; padding: 30px max(20px, 5vw) 50px;
@@ -305,14 +336,64 @@ a:hover { text-decoration: underline; }
 }
 .footer-sub { font-size: 12px; opacity: 0.75; margin-top: 6px; }
 
+/* ---------- 移动端 ---------- */
 @media (max-width: 560px) {
   .nav-links { gap: 14px; font-size: 14px; }
   .hero-stats { gap: 24px; }
   .dock { bottom: 16px; padding: 8px 10px; gap: 4px; }
   .dock-item { width: 42px; height: 42px; font-size: 20px; }
+
+  /* 移动端 GPU 预算有限：关掉毛玻璃，改用不透明底色，滚动会明显更顺 */
+  .nav, .dock, .dock-item, .theme-toggle, .btn, .about-card, .card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .nav { background: var(--bg); }
+  .dock { background: var(--bg-soft); }
+  .dock-item { background: var(--bg-soft); }
+  .theme-toggle, .btn, .about-card, .card { background: var(--bg-soft); }
 }
 
+/* ---------- 尊重系统的「减少动态效果」 ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .light-layer { display: none; }
-  * { transition: none !important; }
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+  .card:hover { transform: none; }
+  .btn:hover { transform: none; }
+  .theme-toggle:hover { transform: none; }
 }
+
+/* ---------- 浅色主题细节修正 ----------
+   原样式大量使用 rgba(255,255,255,...) 描边和高光，那是为深色底设计的；
+   放在浅色底上会「隐形」，主按钮的白字也会因为浅色渐变而对比度不足。 */
+[data-theme="light"] .btn,
+[data-theme="light"] .theme-toggle,
+[data-theme="light"] .dock-item { border-color: rgba(0, 0, 0, 0.12); }
+
+[data-theme="light"] .btn:hover,
+[data-theme="light"] .theme-toggle:hover { border-color: rgba(0, 0, 0, 0.28); }
+
+[data-theme="light"] .dock-item:hover {
+  border-color: rgba(0, 0, 0, 0.24);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .about-card:hover {
+  border-color: rgba(0, 0, 0, 0.22);
+  box-shadow: var(--shadow), 0 0 26px rgba(0, 0, 0, 0.08);
+}
+
+/* 主按钮：白底上用实色渐变，保证白字对比度（WCAG AA） */
+[data-theme="light"] .btn-primary {
+  background: linear-gradient(135deg, #0969da, #1a7f37);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #fff;
+}
+
+[data-theme="light"] .btn-primary:hover { border-color: rgba(0, 0, 0, 0.2); }
+
+[data-theme="light"] .dock {
+  box-shadow: 0 12px 40px rgba(140, 149, 159, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
