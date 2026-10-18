@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark" class="deck-page">
+<html lang="zh-CN" data-theme="dark" class="no-js">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- 安全策略：无第三方脚本；内联脚本用 sha256 白名单放行（构建脚本自动生成 hash） -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' 'sha256-xRIDjpOdqq3kQjRgF/hK3IMXFdKYnE68BAMS3r0YZis=' 'sha256-cf//sC6BXQjlo0ifty4vtFqnFvcjYjM+qZ/bFruzSr8='; style-src 'self'; img-src 'self' data:; connect-src 'self'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' 'sha256-zGc6Hdnm4dCxcXhmq+N/Z4ntZqnSETq8jA7tEyUPyf4=' 'sha256-cf//sC6BXQjlo0ifty4vtFqnFvcjYjM+qZ/bFruzSr8='; style-src 'self'; img-src 'self' data:; connect-src 'self'" />
 
   <!-- 首屏主题：必须在样式表之前执行，避免浅色系统用户先看到暗色再闪一下 -->
   <script id="theme-init">
   (function () {
     try {
+      var root = document.documentElement;
+      root.className = root.className.replace(/\bno-js\b/, "").trim();
       var saved = localStorage.getItem("theme");
       var light = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-      document.documentElement.setAttribute("data-theme", saved || (light ? "light" : "dark"));
+      root.setAttribute("data-theme", saved || (light ? "light" : "dark"));
     } catch (e) {}
   })();
   </script>
@@ -47,7 +49,7 @@
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.json" />
 
-  <link rel="stylesheet" href="/assets/style.css?v=d341dbf6" />
+  <link rel="stylesheet" href="/assets/style.css?v=4173ab9b" />
 
   <!-- 结构化数据：告诉搜索引擎这是一个人 -->
   <script type="application/ld+json">
@@ -65,105 +67,154 @@
   }
   </script>
 </head>
-<body>
+<body class="apple-page">
   <a class="skip-link" href="#main">跳到主要内容</a>
 
-  <header class="nav">
-    <a class="brand" href="#slide-1">
-      <span class="brand-mark" aria-hidden="true">Q</span>
-      <span class="brand-text">qi-neo</span>
-    </a>
-    <nav class="nav-links" aria-label="主导航">
-      <a href="#slide-2">关于</a>
-      <a href="#slide-3">项目</a>
-      <a href="#slide-7">联系</a>
-      <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub ↗</a>
-    </nav>
-    <button id="theme-toggle" class="theme-toggle" type="button"
-            aria-label="切换到浅色主题" aria-pressed="true"
-            title="切换深色 / 浅色">
-      <span class="icon-dark" aria-hidden="true">☀️</span>
-      <span class="icon-light" aria-hidden="true">🌙</span>
-    </button>
+  <!-- 吸顶本地导航（对应 Apple 的 localnav） -->
+  <header class="localnav" id="localnav">
+    <div class="localnav-inner">
+      <a class="localnav-title" href="#top">
+        <span class="localnav-mark" aria-hidden="true">Q</span>
+        <span>qi-neo</span>
+      </a>
+      <nav class="localnav-links" aria-label="页面导航">
+        <a href="#highlights">亮点</a>
+        <a href="#about">关于</a>
+        <a href="#projects">项目</a>
+        <a href="#tech">技术</a>
+        <a href="#specs">参数</a>
+      </nav>
+      <div class="localnav-end">
+        <a class="localnav-cta" href="#contact">联系我</a>
+        <button id="theme-toggle" class="theme-toggle localnav-theme" type="button"
+                aria-label="切换到浅色主题" aria-pressed="true"
+                title="切换深色 / 浅色">
+          <span class="icon-dark" aria-hidden="true">☀️</span>
+          <span class="icon-light" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+    </div>
   </header>
 
-  <nav class="deck-nav" aria-label="页面章节">
-    <a href="#slide-1" aria-label="首页"></a>
-    <a href="#slide-2" aria-label="关于我"></a>
-    <a href="#slide-3" aria-label="开源项目"></a>
-    <a href="#slide-4" aria-label="技术亮点"></a>
-    <a href="#slide-5" aria-label="关键指标"></a>
-    <a href="#slide-6" aria-label="演示与素材"></a>
-    <a href="#slide-7" aria-label="联系我"></a>
-  </nav>
-  <div class="deck-counter" aria-hidden="true">01 / 07</div>
-
-  <main id="main" class="deck">
-    <!-- 01 首页 -->
-    <section class="slide slide--hero" id="slide-1" aria-label="首页">
-      <div class="slide-inner">
-        <p class="hero-eyebrow">嵌入式软件工程师 · 学生开发者</p>
-        <h1 class="hero-name">qi-neo</h1>
-        <p class="hero-tagline">
-          C++ · ROS2 · 传感器驱动与边缘部署<br />
-          专注控制与嵌入式方向的学生开发者
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#slide-3">查看我的项目</a>
-          <a class="btn btn-ghost" href="#slide-7">联系我</a>
-          <a class="btn btn-ghost" href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 主页 ↗</a>
+  <main id="main">
+    <!-- Hero -->
+    <section class="ap-hero" id="top">
+      <div class="ap-hero-grid">
+        <div class="ap-hero-copy" data-reveal>
+          <p class="ap-eyebrow">嵌入式软件 · C++ · ROS2</p>
+          <h1 class="ap-title">qi-neo</h1>
+          <p class="ap-sub">把传感器数据，变成机器人可信的能力。</p>
+          <p class="ap-links">
+            <a class="ap-link" href="#projects">查看项目 <span aria-hidden="true">›</span></a>
+            <a class="ap-link" href="#contact">联系我 <span aria-hidden="true">›</span></a>
+          </p>
+          <p class="ap-hero-meta">
+            <span><strong data-stat="repos">3</strong> 个公开仓库</span>
+            <span><strong data-stat="stars">3</strong> star</span>
+            <span>主力语言 <strong data-stat="lang">C++</strong></span>
+          </p>
         </div>
-        <ul class="hero-stats" id="hero-stats">
-          <li><strong data-stat="repos">3</strong><span>公开仓库</span></li>
-          <li><strong data-stat="stars">3</strong><span>累计 Star</span></li>
-          <li><strong data-stat="lang">C++</strong><span>主力语言</span></li>
+
+        <figure class="term" data-reveal aria-label="unilidar-driver 的构建与自检命令示例">
+          <div class="term-bar" aria-hidden="true">
+            <span class="term-dot"></span>
+            <span class="term-dot"></span>
+            <span class="term-dot"></span>
+            <span class="term-title">unilidar-driver — zsh</span>
+          </div>
+          <pre class="term-body"><code><span class="t-prompt">$</span> colcon build --packages-select unilidar_driver
+<span class="t-out">Finished &lt;&lt;&lt; unilidar_driver</span>
+
+<span class="t-prompt">$</span> ./decoder_selftest
+<span class="t-ok">63 assertions passed · 0 failed</span>
+
+<span class="t-prompt">$</span> ros2 launch unilidar_driver unilidar_driver.launch.py
+<span class="t-out">/unilidar/cloud  ·  sensor_msgs/PointCloud2</span>
+<span class="t-out">/unilidar/imu    ·  sensor_msgs/Imu</span></code></pre>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 先刷重点：横向图库 -->
+    <section class="ap-band ap-band--soft" id="highlights" aria-labelledby="h-highlights">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow" data-reveal>先刷重点</p>
+        <h2 class="ap-h2" id="h-highlights" data-reveal>四个值得先看的点</h2>
+      </div>
+
+      <div class="gallery" data-carousel data-reveal>
+        <div class="carousel gallery-track" role="group" aria-label="重点亮点，可左右滑动">
+          <article class="gallery-card">
+            <p class="gallery-kicker">开源项目</p>
+            <h3>三个方向，同一套 C++ 与 ROS2 底子</h3>
+            <p>激光雷达驱动、主动悬架预瞄、MaixCam + ESP32 的 TCP 控制，从传感器到执行器各走一遍。</p>
+          </article>
+          <article class="gallery-card">
+            <p class="gallery-kicker">协议解析</p>
+            <h3>不链接官方静态库</h3>
+            <p>Unitree L1 的 UDP 报文由驱动自己解：帧尾标识 + CRC32 定界，点云几何还原全部重写。</p>
+          </article>
+          <article class="gallery-card">
+            <p class="gallery-kicker">可验证性</p>
+            <h3>63 项断言，不接硬件也能跑</h3>
+            <p>协议核心与 ROS 解耦，离线自检 + 变异测试；接上真实雷达先用探针确认真实包长。</p>
+          </article>
+          <article class="gallery-card">
+            <p class="gallery-kicker">接口</p>
+            <h3>两路标准话题，可直接顶替官方节点</h3>
+            <p><code>sensor_msgs/PointCloud2</code> 与 <code>sensor_msgs/Imu</code>，QoS 与 RViz 等常见下游对齐。</p>
+          </article>
+        </div>
+
+        <div class="gallery-controls">
+          <div class="carousel-dots" role="tablist" aria-label="亮点导航"></div>
+          <div class="gallery-arrows">
+            <button class="carousel-arrow" type="button" data-prev aria-label="上一张">←</button>
+            <button class="carousel-arrow" type="button" data-next aria-label="下一张">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 关于 -->
+    <section class="ap-band" id="about" aria-labelledby="h-about">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow" data-reveal>关于</p>
+        <h2 class="ap-h2" id="h-about" data-reveal>专注控制与嵌入式</h2>
+        <div class="ap-copy" data-reveal>
+          <p>
+            我是一名专注于<strong>控制与嵌入式</strong>方向的学生开发者。日常用 <strong>C++</strong> 写驱动与控制，
+            用 <strong>ROS2</strong> 搭机器人系统，也在折腾激光雷达、边缘 AI 部署这类硬核活儿。
+          </p>
+          <p>
+            这个站点收录我的 <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 开源项目</a>，
+            项目列表在构建时自动同步。后续还会逐步补充简历、博客和作品集。
+          </p>
+        </div>
+        <ul class="ap-tags" data-reveal>
+          <li>C++</li>
+          <li>ROS2</li>
+          <li>嵌入式</li>
+          <li>激光雷达</li>
+          <li>边缘部署</li>
+          <li>Qt</li>
         </ul>
-        <p class="deck-hint">下滑 / 方向键继续 ↓</p>
       </div>
     </section>
 
-    <!-- 02 关于 -->
-    <section class="slide" id="slide-2" aria-labelledby="t-about">
-      <div class="slide-inner">
-        <p class="slide-eyebrow">关于</p>
-        <h2 class="slide-title" id="t-about">关于我</h2>
-        <div class="slide-body">
-          <div class="about-card">
-            <p>
-              我是一名专注于<strong>控制与嵌入式</strong>方向的学生开发者。
-              日常用 <strong>C++</strong> 写驱动与控制，用 <strong>ROS2</strong> 搭机器人系统，
-              也在折腾激光雷达、边缘 AI 部署这类硬核活儿。
-            </p>
-            <p>
-              这个站点收录我的 <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 开源项目</a>，
-              项目列表在构建时自动同步，保持最新。后续还会逐步补充简历、博客和作品集。
-            </p>
-            <div class="tags">
-              <span class="tag">C++</span>
-              <span class="tag">ROS2</span>
-              <span class="tag">嵌入式</span>
-              <span class="tag">激光雷达</span>
-              <span class="tag">边缘部署</span>
-              <span class="tag">Qt</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 03 开源项目 -->
-    <section class="slide" id="slide-3" aria-labelledby="t-projects">
-      <div class="slide-inner">
-        <div class="section-head">
+    <!-- 项目 -->
+    <section class="ap-band ap-band--soft" id="projects" aria-labelledby="h-projects">
+      <div class="ap-wrap">
+        <div class="ap-head" data-reveal>
           <div>
-            <p class="slide-eyebrow">作品</p>
-            <h2 class="slide-title" id="t-projects">开源项目</h2>
+            <p class="ap-eyebrow">作品</p>
+            <h2 class="ap-h2" id="h-projects">开源项目</h2>
           </div>
-          <span id="projects-status" class="projects-status" aria-live="polite" aria-atomic="true">构建时快照 · 共 3 个项目</span>
+          <span id="projects-status" class="ap-status" aria-live="polite" aria-atomic="true">构建时快照 · 共 3 个项目</span>
         </div>
-        <div class="slide-body">
-          <div id="projects-grid" class="projects-grid">
-            <!-- REPOS:START —— 由 scripts/build.py 自动生成，请勿手改 -->
+
+        <div id="projects-grid" class="projects-grid">
+          <!-- REPOS:START —— 由 scripts/build.py 自动生成，请勿手改 -->
         <article class="card">
           <div class="card-top">
             <span class="card-icon" aria-hidden="true">⚙️</span>
@@ -217,167 +268,145 @@
             <a class="card-link" href="https://github.com/qi-neo/unilidar-driver" target="_blank" rel="noopener">在 GitHub 查看 ↗</a>
           </div>
         </article>
-            <!-- REPOS:END -->
-          </div>
+          <!-- REPOS:END -->
         </div>
       </div>
     </section>
 
-    <!-- 04 技术亮点 -->
-    <section class="slide" id="slide-4" aria-labelledby="t-highlight">
-      <div class="slide-inner">
-        <p class="slide-eyebrow">精选项目 · unilidar-driver</p>
-        <h2 class="slide-title" id="t-highlight">把字节流变成可信的激光点云</h2>
-        <p class="slide-lead">
+    <!-- 技术亮点 -->
+    <section class="ap-band" id="tech" aria-labelledby="h-tech">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow" data-reveal>精选项目 · unilidar-driver</p>
+        <h2 class="ap-h2" id="h-tech" data-reveal>把字节流变成可信的激光点云</h2>
+        <p class="ap-copy ap-copy--lead" data-reveal>
           Unitree L1 激光雷达的 ROS2 驱动：自己解析 UDP 报文，输出标准
-          <code>sensor_msgs/PointCloud2</code> 与 <code>Imu</code> 话题，
-          不链接官方静态库。左右拖动看四个真正花时间的坑。
+          <code>sensor_msgs/PointCloud2</code> 与 <code>Imu</code> 话题，不链接官方静态库。
         </p>
 
-        <div class="stat-strip">
+        <div class="stat-strip" data-reveal>
           <div class="stat-cell"><div class="k">协议解析</div><div class="v">自实现</div></div>
           <div class="stat-cell"><div class="k">帧定界</div><div class="v">CRC32</div></div>
           <div class="stat-cell"><div class="k">离线自检</div><div class="v">63 项断言</div></div>
           <div class="stat-cell"><div class="k">输出话题</div><div class="v">2 路</div></div>
         </div>
 
-        <div class="slide-body">
-          <div class="carousel-wrap" data-carousel>
-            <div class="carousel" role="group" aria-label="技术难点卡片，可左右滑动">
-              <article class="hl-card">
-                <span class="hl-num" aria-hidden="true">01</span>
-                <h3>官方给的包长不可信，改用「帧尾 + CRC32」定界</h3>
-                <p>
-                  官方协议头文件里的字节数注释和它自己的字段定义对不上：3D 点云注释写 1036 B、按字段实算 1044 B；
-                  IMU 注释写 156 B、实算 80 B。所以驱动<strong>不拿整包长度当判据</strong>，
-                  只用帧尾标识加 CRC32 定界——随机数据恰好对齐的概率约 2⁻³²，足够可靠。
-                </p>
-              </article>
+        <div class="carousel-wrap" data-carousel data-reveal>
+          <div class="carousel" role="group" aria-label="技术难点卡片，可左右滑动">
+            <article class="hl-card">
+              <span class="hl-num" aria-hidden="true">01</span>
+              <h3>官方给的包长不可信，改用「帧尾 + CRC32」定界</h3>
+              <p>
+                官方协议头文件里的字节数注释和它自己的字段定义对不上：3D 点云注释写 1036 B、按字段实算 1044 B；
+                IMU 注释写 156 B、实算 80 B。所以驱动<strong>不拿整包长度当判据</strong>，
+                只用帧尾标识加 CRC32 定界——随机数据恰好对齐的概率约 2⁻³²，足够可靠。
+              </p>
+            </article>
 
-              <article class="hl-card">
-                <span class="hl-num" aria-hidden="true">02</span>
-                <h3>IMU 四元数顺序官方自相矛盾，做成可配置项</h3>
-                <p>
-                  固件没有公开文档约定 <code>quaternion[4]</code> 的排列，而官方 ROS2 包自身就是矛盾的：
-                  Imu 消息按 <code>x,y,z,w</code> 填，TF 广播却按 <code>w,x,y,z</code> 填。填错会让姿态整体错乱。
-                  本驱动做成参数 <code>quaternion_order</code>，静止水平放置时正确顺序下 w 应接近 ±1。
-                </p>
-              </article>
+            <article class="hl-card">
+              <span class="hl-num" aria-hidden="true">02</span>
+              <h3>IMU 四元数顺序官方自相矛盾，做成可配置项</h3>
+              <p>
+                固件没有公开文档约定 <code>quaternion[4]</code> 的排列，而官方 ROS2 包自身就是矛盾的：
+                Imu 消息按 <code>x,y,z,w</code> 填，TF 广播却按 <code>w,x,y,z</code> 填。填错会让姿态整体错乱。
+                本驱动做成参数 <code>quaternion_order</code>，静止水平放置时正确顺序下 w 应接近 ±1。
+              </p>
+            </article>
 
-              <article class="hl-card">
-                <span class="hl-num" aria-hidden="true">03</span>
-                <h3>协议核心与 ROS 解耦，不接硬件也能验证</h3>
-                <p>
-                  解析逻辑不依赖 ROS，配一套 63 项断言的离线自检（<code>decoder_selftest</code>）并做过变异测试；
-                  另有 <code>udp_probe</code> 探针，接上真实雷达 5 分钟内就能确认真实包长与 CRC 行为。
-                  CI 跑双编译器 × sanitizer + UDP 回环集成测试。
-                </p>
-              </article>
+            <article class="hl-card">
+              <span class="hl-num" aria-hidden="true">03</span>
+              <h3>协议核心与 ROS 解耦，不接硬件也能验证</h3>
+              <p>
+                解析逻辑不依赖 ROS，配一套 63 项断言的离线自检（<code>decoder_selftest</code>）并做过变异测试；
+                另有 <code>udp_probe</code> 探针，接上真实雷达 5 分钟内就能确认真实包长与 CRC 行为。
+                CI 跑双编译器 × sanitizer + UDP 回环集成测试。
+              </p>
+            </article>
 
-              <article class="hl-card">
-                <span class="hl-num" aria-hidden="true">04</span>
-                <h3>「明明在发却收不到」：QoS 与下游对齐</h3>
-                <p>
-                  ROS2 默认 QoS 与 <code>SensorDataQoS</code> 不兼容时，下游订阅者会静默收不到数据。
-                  驱动统一使用 <code>SensorDataQoS</code>，与 RViz、点云处理节点等常见下游保持一致。
-                </p>
-              </article>
-            </div>
+            <article class="hl-card">
+              <span class="hl-num" aria-hidden="true">04</span>
+              <h3>「明明在发却收不到」：QoS 与下游对齐</h3>
+              <p>
+                ROS2 默认 QoS 与 <code>SensorDataQoS</code> 不兼容时，下游订阅者会静默收不到数据。
+                驱动统一使用 <code>SensorDataQoS</code>，与 RViz、点云处理节点等常见下游保持一致。
+              </p>
+            </article>
+          </div>
 
-            <div class="carousel-controls">
+          <div class="carousel-controls">
+            <div class="carousel-dots" role="tablist" aria-label="难点卡片导航"></div>
+            <div class="gallery-arrows">
               <button class="carousel-arrow" type="button" data-prev aria-label="上一张">←</button>
               <button class="carousel-arrow" type="button" data-next aria-label="下一张">→</button>
-              <div class="carousel-dots" role="tablist" aria-label="难点卡片导航"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 05 关键指标 -->
-    <section class="slide" id="slide-5" aria-labelledby="t-metrics">
-      <div class="slide-inner">
-        <p class="slide-eyebrow">数据</p>
-        <h2 class="slide-title" id="t-metrics">unilidar-driver 关键指标</h2>
-        <div class="slide-body">
-          <div class="spec-wrap">
-            <table class="spec">
-              <caption class="sr-only">unilidar-driver 关键指标（部分待实测补充）</caption>
-              <tbody>
-                <tr><th scope="row">点云话题</th><td><code>/unilidar/cloud</code> · <code>sensor_msgs/PointCloud2</code>（x, y, z, intensity）</td></tr>
-                <tr><th scope="row">IMU 话题</th><td><code>/unilidar/imu</code> · <code>sensor_msgs/Imu</code></td></tr>
-                <tr><th scope="row">帧定界方式</th><td>帧尾标识 + CRC32，不依赖整包长度</td></tr>
-                <tr><th scope="row">离线自检</th><td>63 项断言，含变异测试</td></tr>
-                <tr><th scope="row">输出频率</th><td><span class="todo"></span></td></tr>
-                <tr><th scope="row">单帧点数</th><td><span class="todo"></span></td></tr>
-                <tr><th scope="row">端到端延迟</th><td><span class="todo"></span></td></tr>
-                <tr><th scope="row">实机验证平台</th><td><span class="todo"></span></td></tr>
-              </tbody>
-            </table>
-          </div>
+    <!-- 参数 -->
+    <section class="ap-band ap-band--soft" id="specs" aria-labelledby="h-specs">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow" data-reveal>技术规格</p>
+        <h2 class="ap-h2" id="h-specs" data-reveal>unilidar-driver 参数</h2>
+        <div class="ap-spec" data-reveal>
+          <dl class="spec-list">
+            <div class="spec-row"><dt>点云话题</dt><dd><code>/unilidar/cloud</code> · <code>sensor_msgs/PointCloud2</code>（x, y, z, intensity）</dd></div>
+            <div class="spec-row"><dt>IMU 话题</dt><dd><code>/unilidar/imu</code> · <code>sensor_msgs/Imu</code></dd></div>
+            <div class="spec-row"><dt>帧定界</dt><dd>帧尾标识 + CRC32，不依赖整包长度</dd></div>
+            <div class="spec-row"><dt>离线自检</dt><dd>63 项断言，含变异测试</dd></div>
+            <div class="spec-row"><dt>输出频率</dt><dd class="todo"></dd></div>
+            <div class="spec-row"><dt>单帧点数</dt><dd class="todo"></dd></div>
+            <div class="spec-row"><dt>端到端延迟</dt><dd class="todo"></dd></div>
+            <div class="spec-row"><dt>实机验证平台</dt><dd class="todo"></dd></div>
+          </dl>
         </div>
       </div>
     </section>
 
-    <!-- 06 演示与素材 -->
-    <section class="slide" id="slide-6" aria-labelledby="t-media">
-      <div class="slide-inner">
-        <p class="slide-eyebrow">演示</p>
-        <h2 class="slide-title" id="t-media">演示与素材</h2>
-        <div class="slide-body">
-          <div class="media-grid">
-            <div class="media-slot">
-              RViz2 点云截图
-              <span class="hint">待补充：实机采集后放这里</span>
-            </div>
-            <div class="media-slot">
-              <code>udp_probe</code> 终端输出
-              <span class="hint">待补充：真实包长 / CRC 诊断信息</span>
-            </div>
-            <div class="media-slot">
-              系统接线与网络拓扑
-              <span class="hint">待补充：雷达 ↔ 主机 ↔ ROS2</span>
-            </div>
-          </div>
-          <p class="todo media-note">可以补的内容：实机点云 GIF、与官方驱动的话题对比、单帧解析耗时曲线。</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 07 联系 -->
-    <section class="slide" id="slide-7" aria-labelledby="t-contact">
-      <div class="slide-inner">
-        <p class="slide-eyebrow">联系</p>
-        <h2 class="slide-title" id="t-contact">聊聊激光雷达、ROS2 或嵌入式</h2>
-        <div class="slide-body">
-          <div class="contact">
-            <p>
-              对激光雷达驱动、ROS2 传感器接入、嵌入式控制方向感兴趣，
-              或者想聊聊合作机会，欢迎直接发邮件。
-            </p>
-            <a class="contact-mail" href="mailto:1794194885@qq.com">1794194885@qq.com</a>
-          </div>
-
-          <div class="prose media-note">
-            <p>
-              <strong>延伸阅读：</strong>
-              <a href="https://github.com/qi-neo/unilidar-driver/blob/main/docs/driver-design.md" target="_blank" rel="noopener">《如何编写一个激光雷达驱动》</a>
-              讲的是方法论：驱动的职责边界、四层架构、帧定界的几种做法与推荐组合，
-              以及如何在不接硬件的情况下验证。
-            </p>
-          </div>
-
-          <div class="page-nav">
-            <a class="btn btn-ghost" href="#slide-1">回到首页</a>
-            <a class="btn btn-ghost" href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 主页 ↗</a>
-          </div>
-
-          <p class="deck-footnote">© <span id="year">2026</span> qi-neo · 项目数据在构建时同步 · 由 GitHub Pages 托管</p>
-        </div>
+    <!-- 联系 -->
+    <section class="ap-band ap-contact" id="contact" aria-labelledby="h-contact">
+      <div class="ap-wrap ap-wrap--center">
+        <p class="ap-eyebrow" data-reveal>联系</p>
+        <h2 class="ap-h2" id="h-contact" data-reveal>聊聊合作</h2>
+        <p class="ap-copy ap-copy--center" data-reveal>
+          对激光雷达驱动、ROS2 传感器接入、嵌入式控制方向感兴趣，或者想聊聊合作机会，欢迎直接发邮件。
+        </p>
+        <a class="ap-mail" href="mailto:1794194885@qq.com" data-reveal>1794194885@qq.com</a>
+        <p class="ap-links ap-links--center" data-reveal>
+          <a class="ap-link" href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub <span aria-hidden="true">›</span></a>
+          <a class="ap-link" href="https://github.com/qi-neo/unilidar-driver/blob/main/docs/driver-design.md" target="_blank" rel="noopener">驱动设计文档 <span aria-hidden="true">›</span></a>
+        </p>
       </div>
     </section>
   </main>
 
-  <script src="/assets/app.js?v=0db4719f" defer></script>
+  <footer class="ap-footer">
+    <div class="ap-footer-inner">
+      <div class="ap-footer-cols">
+        <div class="ap-footer-col">
+          <h3>站内</h3>
+          <a href="#highlights">亮点</a>
+          <a href="#about">关于</a>
+          <a href="#projects">项目</a>
+          <a href="#tech">技术</a>
+          <a href="#specs">参数</a>
+        </div>
+        <div class="ap-footer-col">
+          <h3>项目</h3>
+          <a href="https://github.com/qi-neo/unilidar-driver" target="_blank" rel="noopener">unilidar-driver</a>
+          <a href="https://github.com/qi-neo/active-suspension-lidar-preview" target="_blank" rel="noopener">active-suspension-lidar-preview</a>
+          <a href="https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor" target="_blank" rel="noopener">maixcam-esp32-tcp-stepper-motor</a>
+        </div>
+        <div class="ap-footer-col">
+          <h3>联系</h3>
+          <a href="mailto:1794194885@qq.com">1794194885@qq.com</a>
+          <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <p class="ap-footer-legal">© <span id="year">2026</span> qi-neo · 项目数据在构建时同步 · 由 GitHub Pages 托管</p>
+    </div>
+  </footer>
+
+  <script src="/assets/app.js?v=580874cd" defer></script>
 </body>
 </html>
