@@ -65,23 +65,17 @@ def pick_icon(repo):
     return "📦"
 
 
-def relative_time(iso):
+def updated_label(iso):
+    """静态卡片用绝对日期。
+    用相对时间（「3 天前」）会让页面每天产生一次无意义变更，
+    相对时间交给浏览器里的 JS 实时计算。"""
     if not iso:
         return ""
     try:
         then = datetime.datetime.fromisoformat(iso.replace("Z", "+00:00"))
     except ValueError:
         return ""
-    now = datetime.datetime.now(datetime.timezone.utc)
-    diff = max(0.0, (now - then).total_seconds())
-    day = 86400
-    if diff < day:
-        return "今天更新"
-    if diff < 30 * day:
-        return f"{int(diff // day)} 天前更新"
-    if diff < 365 * day:
-        return f"{int(diff // (30 * day))} 个月前更新"
-    return f"{int(diff // (365 * day))} 年前更新"
+    return then.strftime("%Y-%m-%d") + " 更新"
 
 
 def ssl_context():
@@ -158,7 +152,7 @@ def render_cards(repos):
             f'            <span class="lang"><span class="lang-dot lang-{lang_cls}"'
             f' aria-hidden="true"></span>{html.escape(lang)}</span>\n'
             f'            <span class="card-stars">★ {repo["stargazers_count"]}</span>\n'
-            f'            <span>{relative_time(repo["updated_at"])}</span>\n'
+            f'            <span>{updated_label(repo["updated_at"])}</span>\n'
             "          </div>\n"
             '          <div class="card-foot">\n'
             f'            <a class="card-link" href="{html.escape(repo["html_url"], quote=True)}"'
@@ -262,22 +256,28 @@ def main():
             raise SystemExit(f"网络不可用：{exc.reason}，终止构建（不覆盖已有数据）")
         print(f"[build] 拉到 {len(repos)} 个公开仓库")
 
-    REPOS_JSON.write_text(
-        json.dumps(
-            {
-                "username": USERNAME,
-                "updated_at": datetime.datetime.now(datetime.timezone.utc)
-                .replace(microsecond=0)
-                .isoformat()
-                .replace("+00:00", "Z"),
-                "repos": repos,
-            },
-            ensure_ascii=False,
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
+    # 数据没变就沿用旧时间戳，避免每天定时任务都产生一次无意义提交
+    stamp = (
+        datetime.datetime.now(datetime.timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
     )
+    if REPOS_JSON.exists():
+        try:
+            previous = json.loads(REPOS_JSON.read_text("utf-8"))
+            if previous.get("repos") == repos and previous.get("updated_at"):
+                stamp = previous["updated_at"]
+        except (ValueError, OSError):
+            pass
+
+    payload = {"username": USERNAME, "updated_at": stamp, "repos": repos}
+    new_json = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    if not REPOS_JSON.exists() or REPOS_JSON.read_text("utf-8") != new_json:
+        REPOS_JSON.write_text(new_json, encoding="utf-8")
+        print("[build] assets/repos.json 已更新")
+    else:
+        print("[build] assets/repos.json 无变化")
 
     index_text = INDEX.read_text("utf-8")
     index_text = update_index(index_text, repos)
