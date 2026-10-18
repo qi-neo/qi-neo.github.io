@@ -759,3 +759,23 @@ html.deck-page { scroll-snap-type: y proximity; }
   font-size: 12px; letter-spacing: 0.1em; color: var(--text-dim); opacity: 0.7;
 }
 @media (max-width: 760px) { .deck-hint { margin-top: 26px; } }
+
+/* 首页项目区：移动端改为横向滑动，避免一屏堆三张卡片 */
+@media (max-width: 760px) {
+  .projects-grid {
+    display: flex; gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .projects-grid::-webkit-scrollbar { display: none; }
+  .projects-grid > .card { flex: 0 0 86vw; scroll-snap-align: center; }
+}
+
+/* 小屏导航：隐藏锚点文字链接（分屏圆点已经承担导航），只留品牌 + GitHub + 主题按钮 */
+@media (max-width: 560px) {
+  .nav-links a[href^="#"] { display: none; }
+  .brand { white-space: nowrap; }
+}

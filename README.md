@@ -24,32 +24,36 @@ GitHub Actions（每天 / 手动触发）
 `app.js` 只做增量刷新：优先读 `localStorage`（6 小时），随后拉一次同源的
 `assets/repos.json`；失败时保留构建时写入的静态卡片，不会白屏。
 
-## 项目详情页
+## 页面结构（单页 7 屏）
 
-`projects/<仓库名>.html` 存在时，首页对应卡片会自动多出一个「项目详情 →」入口
-（`scripts/build.py` 靠文件是否存在来判断，不需要额外配置）。
+首页本身就是一个**全屏滑动页**（CSS `scroll-snap`），没有二级页面：
 
-详情页采用**全屏滑动**（CSS scroll-snap）+ 右侧圆点导航 + 左下角页码，
-难点等并列内容用**横向卡片轮播**（拖动 / 左右按钮 / 圆点均可切换）；
-`prefers-reduced-motion` 下会关掉吸附与平滑滚动。
+| # | 屏幕 | 内容 |
+|---|---|---|
+| 01 | 首页 | 名字 / 定位 / 入口按钮 / 仓库·Star·语言统计 |
+| 02 | 关于我 | 自我介绍 + 技术标签 |
+| 03 | 开源项目 | 卡片（版本徽章 / topics / 语言占比条），移动端横向滑动 |
+| 04 | 技术亮点 | 精选项目数据条 + **横向卡片轮播**（4 个技术难点） |
+| 05 | 关键指标 | 话题 / 帧定界 / 自检 / 待补充指标 |
+| 06 | 演示与素材 | 截图与终端输出占位 |
+| 07 | 联系 | 邮箱 + 延伸阅读 |
 
-新增一个详情页：
+交互：滚轮/触控板吸附翻页、右侧圆点、左下角页码、`↑ ↓ PageUp PageDown Home End`；
+`prefers-reduced-motion` 下关闭吸附与平滑滚动；禁用 JS 时退化为普通长页滚动，内容完整可读。
 
-1. 复制 `projects/unilidar-driver.html` 改内容
-2. 跑一次 `python3 scripts/build.py --offline`，卡片上就会出现入口
+**加一屏**：在 `index.html` 里复制一个 `<section class="slide" id="slide-8">`，
+再到 `.deck-nav` 里加一个 `<a href="#slide-8">`，页码会自动变成 `/ 08`。
 
-卡片数据（topics / 语言占比 / 版本号）也在构建时从 GitHub 拉取：
-仓库打 tag 或发 release，卡片上的版本徽章会跟着变。
+**加一张技术卡片**：往 `.carousel` 里插一个 `<article class="hl-card">`，圆点和左右按钮数量自动跟随。
 
 ## 文件结构
 
 ```
-index.html            页面骨架 + SEO/OG + 静态项目卡片（构建产物，勿手改卡片区）
+index.html            单页 7 屏骨架 + SEO/OG + 静态项目卡片（构建产物，勿手改卡片区）
 404.html              同风格 404
-projects/*.html       项目详情页（手写，构建时自动刷新 CSP 与版本号）
 manifest.json         PWA 清单（添加到主屏）
-assets/style.css      样式（深/浅色、卡片光效、Dock、无障碍）
-assets/app.js         交互（主题、光效、Dock、数据刷新）
+assets/style.css      样式（深/浅色、滑动分屏、卡片光效、轮播、无障碍）
+assets/app.js         交互（分屏翻页、轮播、主题、光效、数据刷新）
 assets/repos.json     项目数据（构建产物：topics / 语言占比 / 版本号）
 assets/og-cover.png   社交分享封面 1200×630
 scripts/build.py      构建脚本

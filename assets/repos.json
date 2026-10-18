@@ -1,6 +1,6 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-10-18T15:08:56Z",
+  "updated_at": "2026-10-18T15:23:15Z",
   "repos": [
     {
       "name": "maixcam-esp32-tcp-stepper-motor",
@@ -108,7 +108,7 @@
         }
       ],
       "version": "v1.0.1",
-      "detail_url": "/projects/unilidar-driver.html"
+      "detail_url": null
     }
   ]
 }
