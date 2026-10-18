@@ -29,6 +29,10 @@ GitHub Actions（每天 / 手动触发）
 `projects/<仓库名>.html` 存在时，首页对应卡片会自动多出一个「项目详情 →」入口
 （`scripts/build.py` 靠文件是否存在来判断，不需要额外配置）。
 
+详情页采用**全屏滑动**（CSS scroll-snap）+ 右侧圆点导航 + 左下角页码，
+难点等并列内容用**横向卡片轮播**（拖动 / 左右按钮 / 圆点均可切换）；
+`prefers-reduced-motion` 下会关掉吸附与平滑滚动。
+
 新增一个详情页：
 
 1. 复制 `projects/unilidar-driver.html` 改内容

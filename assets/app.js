@@ -459,6 +459,151 @@ function initDock() {
   dock.addEventListener("pointercancel", endDrag);
 }
 
+/* ---------- 项目详情页：全屏滑动翻阅 ----------
+   竖向 slide 用 CSS scroll-snap 实现（无 JS 也能滚），JS 只负责：
+   圆点高亮、页码、点圆点跳转、方向键翻页。 */
+function initDeck() {
+  const deck = document.querySelector(".deck");
+  if (!deck) return;
+  const slides = Array.prototype.slice.call(deck.querySelectorAll(".slide"));
+  if (!slides.length) return;
+
+  const dots = Array.prototype.slice.call(document.querySelectorAll(".deck-nav a"));
+  const counter = document.querySelector(".deck-counter");
+  const reduce = prefersReducedMotion();
+  let active = -1;
+
+  function pad(value) {
+    return (value < 10 ? "0" : "") + value;
+  }
+
+  function setActive(index) {
+    if (index < 0 || index === active) return;
+    active = index;
+    dots.forEach((dot, i) => dot.setAttribute("aria-current", i === index ? "true" : "false"));
+    if (counter) counter.textContent = pad(index + 1) + " / " + pad(slides.length);
+  }
+
+  function go(index) {
+    const target = slides[Math.max(0, Math.min(slides.length - 1, index))];
+    if (!target) return;
+    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  }
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActive(slides.indexOf(entry.target));
+      });
+    }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 });
+    slides.forEach((slide) => observer.observe(slide));
+  }
+  setActive(0);
+
+  dots.forEach((dot) => {
+    dot.addEventListener("click", (event) => {
+      event.preventDefault();
+      const target = document.querySelector(dot.getAttribute("href"));
+      const index = slides.indexOf(target);
+      if (index >= 0) go(index);
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    const key = event.key;
+    if (key === "ArrowDown" || key === "PageDown") {
+      event.preventDefault();
+      go(active + 1);
+    } else if (key === "ArrowUp" || key === "PageUp") {
+      event.preventDefault();
+      go(active - 1);
+    } else if (key === "Home") {
+      event.preventDefault();
+      go(0);
+    } else if (key === "End") {
+      event.preventDefault();
+      go(slides.length - 1);
+    }
+  });
+}
+
+/* ---------- 横向卡片：拖动/滑动手感 + 圆点 + 左右按钮 ---------- */
+function initCarousels() {
+  const wraps = document.querySelectorAll("[data-carousel]");
+  if (!wraps.length) return;
+  const reduce = prefersReducedMotion();
+
+  Array.prototype.forEach.call(wraps, (wrap) => {
+    const track = wrap.querySelector(".carousel");
+    if (!track) return;
+    const items = Array.prototype.slice.call(track.children);
+    if (!items.length) return;
+
+    const prev = wrap.querySelector("[data-prev]");
+    const next = wrap.querySelector("[data-next]");
+    const dotsWrap = wrap.querySelector(".carousel-dots");
+    let dots = [];
+
+    if (dotsWrap) {
+      dots = items.map((_, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "carousel-dot";
+        dot.setAttribute("aria-label", "第 " + (index + 1) + " 张");
+        dot.addEventListener("click", () => scrollToIndex(index));
+        dotsWrap.appendChild(dot);
+        return dot;
+      });
+    }
+
+    function scrollToIndex(index) {
+      const item = items[Math.max(0, Math.min(items.length - 1, index))];
+      if (!item) return;
+      const trackRect = track.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const left = itemRect.left - trackRect.left + track.scrollLeft - 2;
+      track.scrollTo({ left: left, behavior: reduce ? "auto" : "smooth" });
+    }
+
+    function currentIndex() {
+      const trackRect = track.getBoundingClientRect();
+      const center = trackRect.left + trackRect.width / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      items.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        const dist = Math.abs(rect.left + rect.width / 2 - center);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = index;
+        }
+      });
+      return best;
+    }
+
+    function sync() {
+      const index = currentIndex();
+      dots.forEach((dot, i) => dot.setAttribute("aria-current", i === index ? "true" : "false"));
+    }
+
+    if (prev) prev.addEventListener("click", () => scrollToIndex(currentIndex() - 1));
+    if (next) next.addEventListener("click", () => scrollToIndex(currentIndex() + 1));
+
+    let raf = null;
+    track.addEventListener("scroll", () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        sync();
+      });
+    }, { passive: true });
+
+    track.setAttribute("tabindex", "0");
+    sync();
+  });
+}
+
 /* ---------- 启动（各模块独立兜底，单点失败不影响整体） ---------- */
 function boot() {
   const yearEl = document.getElementById("year");
@@ -466,6 +611,8 @@ function boot() {
   try { initTheme(); } catch (e) { console.warn(e); }
   try { initCardProximity(); } catch (e) { console.warn(e); }
   try { initDock(); } catch (e) { console.warn(e); }
+  try { initDeck(); } catch (e) { console.warn(e); }
+  try { initCarousels(); } catch (e) { console.warn(e); }
   try { loadProjects(); } catch (e) { console.warn(e); }
 }
 
