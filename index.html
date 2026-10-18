@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com https://qi-neo-home.app.workbuddy.host" />
+  <meta name="description" content="qi-neo · 嵌入式软件 / C++ / ROS2 个人主页与开源项目展示" />
+  <title>qi-neo · 个人主页</title>
+  <link rel="preconnect" href="https://api.github.com" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top">
+      <span class="brand-mark">Q</span>
+      <span class="brand-text">qi-neo</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#about">关于</a>
+      <a href="#projects">项目</a>
+      <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="切换主题" title="切换深色 / 浅色">
+      <span class="icon-dark">☀️</span>
+      <span class="icon-light">🌙</span>
+    </button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="hero-eyebrow">嵌入式软件工程师 · 学生开发者</p>
+        <h1 class="hero-name">qi-neo</h1>
+        <p class="hero-tagline">
+          C++ · ROS2 · 传感器驱动与边缘部署<br />
+          专注控制与嵌入式方向的学生开发者
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projects">查看我的项目</a>
+          <a class="btn btn-ghost" href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 主页 ↗</a>
+        </div>
+        <ul class="hero-stats" id="hero-stats">
+          <li><strong data-stat="repos">—</strong><span>公开仓库</span></li>
+          <li><strong data-stat="stars">—</strong><span>累计 Star</span></li>
+          <li><strong data-stat="lang">C++</strong><span>主力语言</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <h2 class="section-title">关于我</h2>
+      <div class="about-card">
+        <p>
+          我是一名专注于<strong>控制与嵌入式</strong>方向的学生开发者。
+          日常用 <strong>C++</strong> 写驱动与控制，用 <strong>ROS2</strong> 搭机器人系统，
+          也在折腾激光雷达、边缘 AI 部署这类硬核活儿。
+        </p>
+        <p>
+          这个站点目前主要收录我的 <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub 开源项目</a>，
+          项目列表会实时从 GitHub 拉取，自动保持最新。后续还会逐步补充简历、博客和作品集。
+        </p>
+        <div class="tags">
+          <span class="tag">C++</span>
+          <span class="tag">ROS2</span>
+          <span class="tag">嵌入式</span>
+          <span class="tag">激光雷达</span>
+          <span class="tag">边缘部署</span>
+          <span class="tag">Qt</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-head">
+        <h2 class="section-title">开源项目</h2>
+        <span id="projects-status" class="projects-status">加载中…</span>
+      </div>
+      <div id="projects-grid" class="projects-grid">
+        <!-- 卡片由 app.js 注入；下方为兜底骨架 -->
+      </div>
+    </section>
+  </main>
+
+  <nav class="dock" id="dock" aria-label="快捷导航">
+    <a class="dock-item" href="#top" data-tip="首页">🏠</a>
+    <a class="dock-item" href="#about" data-tip="关于">👤</a>
+    <a class="dock-item" href="#projects" data-tip="项目">💻</a>
+    <a class="dock-item" href="https://github.com/qi-neo" target="_blank" rel="noopener" data-tip="GitHub">🐙</a>
+  </nav>
+
+  <!-- 反爬虫蜜罐：正常用户不可见，仅用于诱捕自动化抓取脚本 -->
+  <a class="hp-trap" href="/.well-known/decoy-data" rel="nofollow noindex" aria-hidden="true">decoy</a>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> qi-neo · 用 ❤️ 和 C++ 搭建</p>
+    <p class="footer-sub">本页项目数据来自 GitHub API，实时同步 · 由 WorkBuddy 生成</p>
+  </footer>
+
+  <!-- 云服务 SDK（CDN 全局变量 WorkBuddyCloud，由 publicConfig 初始化） -->
+  <script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

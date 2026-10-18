@@ -1,0 +1,66 @@
+# qi-neo 个人主页 爬虫规则
+# 放行主流搜索引擎以保证基本可发现性；封杀高频 SEO/抓取机器人及通用 HTTP 客户端。
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: *
+Disallow: /
+
+# 针对性封杀常见抓取 / SEO / 采集工具
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+# 通用脚本化客户端（典型爬虫/下载器）
+User-agent: python-requests
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: Wget
+Disallow: /
+
+User-agent: Go-http-client
+Disallow: /
+
+User-agent: Java/
+Disallow: /
+
+Sitemap: https://qi-neo.github.io/sitemap.xml
