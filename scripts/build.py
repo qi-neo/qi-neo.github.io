@@ -56,6 +56,15 @@ ICONS_BY_KEYWORD = [
     (re.compile(r"ros", re.I), "🤖"),
 ]
 
+# GitHub 官方语言配色（与 style.css 的 .lang-* 保持一致）
+LANG_COLORS = {
+    "C++": "#f34b7d", "C": "#555555", "C#": "#178600", "Python": "#3572A5",
+    "JavaScript": "#f1e05a", "TypeScript": "#3178c6", "Shell": "#89e051",
+    "CMake": "#DA3434", "HTML": "#e34c26", "Rust": "#dea584", "Go": "#00ADD8",
+    "Dockerfile": "#384d54", "Makefile": "#427819", "MATLAB": "#e16737",
+}
+DEFAULT_LANG_COLOR = "#8b949e"
+
 
 def pick_icon(repo):
     hay = (repo.get("name", "") + " " + (repo.get("description") or "")).lower()
@@ -98,7 +107,7 @@ def ssl_context():
     return context
 
 
-def fetch_repos():
+def api_request(path):
     headers = {
         "Accept": "application/vnd.github+json",
         "User-Agent": f"{USERNAME}-site-builder",
@@ -107,29 +116,96 @@ def fetch_repos():
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if token:
         headers["Authorization"] = f"Bearer {token}"
-    request = urllib.request.Request(API_URL, headers=headers)
+    request = urllib.request.Request("https://api.github.com" + path, headers=headers)
     with urllib.request.urlopen(request, timeout=30, context=ssl_context()) as response:
-        payload = json.load(response)
+        return json.load(response)
+
+
+def fetch_languages(name):
+    """按字节占比取前 4 种语言，用于卡片底部的配色条"""
+    try:
+        data = api_request(f"/repos/{USERNAME}/{name}/languages")
+    except (urllib.error.HTTPError, urllib.error.URLError):
+        return []
+    total = sum(data.values()) or 1
+    items = sorted(data.items(), key=lambda kv: -kv[1])[:4]
+    return [
+        {
+            "name": key,
+            "percent": round(value * 100 / total, 2),
+            "color": LANG_COLORS.get(key, DEFAULT_LANG_COLOR),
+        }
+        for key, value in items
+    ]
+
+
+def fetch_version(name):
+    """优先取最新 release，其次取最新 tag"""
+    try:
+        return api_request(f"/repos/{USERNAME}/{name}/releases/latest").get("tag_name")
+    except urllib.error.HTTPError:
+        pass
+    except urllib.error.URLError:
+        return None
+    try:
+        tags = api_request(f"/repos/{USERNAME}/{name}/tags?per_page=1")
+        return tags[0]["name"] if tags else None
+    except (urllib.error.HTTPError, urllib.error.URLError):
+        return None
+
+
+def has_detail_page(name):
+    """projects/<name>.html 存在时，卡片上出现「项目详情」入口"""
+    return (ROOT / "projects" / f"{name}.html").exists()
+
+
+def fetch_repos():
+    payload = api_request(f"/users/{USERNAME}/repos?sort=updated&per_page=100&type=public")
 
     repos = []
     for item in payload:
         if item.get("fork"):
             continue
+        name = item.get("name", "")
         # 用户站点仓库本身不作为「项目」展示
-        if item.get("name", "").lower() in {USERNAME.lower(), f"{USERNAME}.github.io".lower()}:
+        if name.lower() in {USERNAME.lower(), f"{USERNAME}.github.io".lower()}:
             continue
         repos.append(
             {
-                "name": item.get("name", ""),
+                "name": name,
                 "description": item.get("description") or "",
                 "language": item.get("language"),
                 "stargazers_count": item.get("stargazers_count") or 0,
                 "updated_at": item.get("updated_at"),
                 "html_url": item.get("html_url", ""),
                 "icon": pick_icon(item),
+                "topics": (item.get("topics") or [])[:6],
+                "languages": fetch_languages(name),
+                "version": fetch_version(name),
+                "detail_url": f"/projects/{name}.html" if has_detail_page(name) else None,
             }
         )
     return repos
+
+
+def render_langbar(languages):
+    """语言占比条：用内联 SVG，静态 HTML 里也不需要内联 style（CSP 不允许）"""
+    if not languages:
+        return ""
+    rects = []
+    x = 0.0
+    for index, lang in enumerate(languages):
+        # 最后一段补齐到 100%，避免百分比取整后留缝
+        width = 100 - x if index == len(languages) - 1 else lang["percent"]
+        rects.append(
+            f'<rect x="{x:.2f}" y="0" width="{width:.2f}" height="4"'
+            f' fill="{lang["color"]}"/>'
+        )
+        x += width
+    return (
+        '          <svg class="card-langbar" viewBox="0 0 100 4" preserveAspectRatio="none"'
+        ' aria-hidden="true" focusable="false">' + "".join(rects) + "</svg>\n"
+    )
 
 
 def render_cards(repos):
@@ -138,6 +214,42 @@ def render_cards(repos):
     for repo in repos:
         lang = repo.get("language") or "其他"
         lang_cls = LANG_CLASS.get(lang, "other")
+        detail = repo.get("detail_url")
+
+        version = ""
+        if repo.get("version"):
+            version = (
+                f'            <span class="card-version">'
+                f'{html.escape(repo["version"])}</span>\n'
+            )
+
+        topics = repo.get("topics") or []
+        chips = ""
+        if topics:
+            inner = "".join(
+                f'<span class="chip">{html.escape(topic)}</span>'
+                for topic in topics[:3]
+            )
+            chips = f'          <div class="card-chips">{inner}</div>\n'
+
+        if detail:
+            primary = (
+                f'            <a class="card-link card-link-strong"'
+                f' href="{html.escape(detail, quote=True)}">项目详情 →</a>\n'
+            )
+            secondary = (
+                f'            <a class="card-link"'
+                f' href="{html.escape(repo["html_url"], quote=True)}"'
+                ' target="_blank" rel="noopener">GitHub ↗</a>\n'
+            )
+        else:
+            primary = (
+                f'            <a class="card-link"'
+                f' href="{html.escape(repo["html_url"], quote=True)}"'
+                ' target="_blank" rel="noopener">在 GitHub 查看 ↗</a>\n'
+            )
+            secondary = ""
+
         blocks.append(
             "\n"
             '        <article class="card">\n'
@@ -146,8 +258,11 @@ def render_cards(repos):
             f'            <a class="card-name" href="{html.escape(repo["html_url"], quote=True)}"'
             ' target="_blank" rel="noopener">'
             f'{html.escape(repo["name"])}</a>\n'
+            f"{version}"
             "          </div>\n"
             f'          <p class="card-desc">{html.escape(repo["description"] or "暂无描述")}</p>\n'
+            f"{chips}"
+            f"{render_langbar(repo.get('languages') or [])}"
             '          <div class="card-meta">\n'
             f'            <span class="lang"><span class="lang-dot lang-{lang_cls}"'
             f' aria-hidden="true"></span>{html.escape(lang)}</span>\n'
@@ -155,8 +270,8 @@ def render_cards(repos):
             f'            <span>{updated_label(repo["updated_at"])}</span>\n'
             "          </div>\n"
             '          <div class="card-foot">\n'
-            f'            <a class="card-link" href="{html.escape(repo["html_url"], quote=True)}"'
-            ' target="_blank" rel="noopener">在 GitHub 查看 ↗</a>\n'
+            f"{primary}"
+            f"{secondary}"
             "          </div>\n"
             "        </article>"
         )
@@ -285,13 +400,15 @@ def main():
     index_text = update_csp(index_text)
     INDEX.write_text(index_text, encoding="utf-8")
 
-    # 404 页面同样需要刷新版本号与 CSP
-    not_found = ROOT / "404.html"
-    if not_found.exists():
-        text = not_found.read_text("utf-8")
+    # 其余页面（404、projects/*.html）只需刷新版本号与 CSP 哈希
+    extra_pages = [ROOT / "404.html"] + sorted((ROOT / "projects").glob("*.html"))
+    for page in extra_pages:
+        if not page.exists():
+            continue
+        text = page.read_text("utf-8")
         text = update_asset_versions(text)
         text = update_csp(text)
-        not_found.write_text(text, encoding="utf-8")
+        page.write_text(text, encoding="utf-8")
 
     if SITEMAP.exists():
         today = datetime.date.today().isoformat()
@@ -300,7 +417,11 @@ def main():
             text = re.sub(r"<lastmod>[^<]*</lastmod>", f"<lastmod>{today}</lastmod>", text)
         SITEMAP.write_text(text, encoding="utf-8")
 
-    print(f"[build] 已写入 {REPOS_JSON.relative_to(ROOT)}、index.html（{len(repos)} 张卡片）")
+    detail_pages = [p for p in (ROOT / "projects").glob("*.html")]
+    print(
+        f"[build] 已写入 {REPOS_JSON.relative_to(ROOT)}、index.html（{len(repos)} 张卡片）"
+        + (f"；详情页 {len(detail_pages)} 个" if detail_pages else "")
+    )
     return 0
 
 

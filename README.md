@@ -24,15 +24,29 @@ GitHub Actions（每天 / 手动触发）
 `app.js` 只做增量刷新：优先读 `localStorage`（6 小时），随后拉一次同源的
 `assets/repos.json`；失败时保留构建时写入的静态卡片，不会白屏。
 
+## 项目详情页
+
+`projects/<仓库名>.html` 存在时，首页对应卡片会自动多出一个「项目详情 →」入口
+（`scripts/build.py` 靠文件是否存在来判断，不需要额外配置）。
+
+新增一个详情页：
+
+1. 复制 `projects/unilidar-driver.html` 改内容
+2. 跑一次 `python3 scripts/build.py --offline`，卡片上就会出现入口
+
+卡片数据（topics / 语言占比 / 版本号）也在构建时从 GitHub 拉取：
+仓库打 tag 或发 release，卡片上的版本徽章会跟着变。
+
 ## 文件结构
 
 ```
 index.html            页面骨架 + SEO/OG + 静态项目卡片（构建产物，勿手改卡片区）
 404.html              同风格 404
+projects/*.html       项目详情页（手写，构建时自动刷新 CSP 与版本号）
 manifest.json         PWA 清单（添加到主屏）
 assets/style.css      样式（深/浅色、卡片光效、Dock、无障碍）
 assets/app.js         交互（主题、光效、Dock、数据刷新）
-assets/repos.json     项目数据（构建产物）
+assets/repos.json     项目数据（构建产物：topics / 语言占比 / 版本号）
 assets/og-cover.png   社交分享封面 1200×630
 scripts/build.py      构建脚本
 robots.txt / sitemap.xml / .nojekyll / favicon.ico

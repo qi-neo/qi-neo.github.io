@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'; script-src 'self' 'sha256-xRIDjpOdqq3kQjRgF/hK3IMXFdKYnE68BAMS3r0YZis='; style-src 'self'; img-src 'self' data:; connect-src 'self'" />
+
+  <script id="theme-init">
+  (function () {
+    try {
+      var saved = localStorage.getItem("theme");
+      var light = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+      document.documentElement.setAttribute("data-theme", saved || (light ? "light" : "dark"));
+    } catch (e) {}
+  })();
+  </script>
+
+  <title>unilidar-driver · Unitree L1 激光雷达 ROS2 驱动 | qi-neo</title>
+  <meta name="description" content="不依赖官方静态库、自行实现 UDP 协议解析的 Unitree L1 激光雷达 ROS2 驱动：帧尾 + CRC32 定界，输出 sensor_msgs/PointCloud2 与 Imu。" />
+  <link rel="canonical" href="https://qi-neo.github.io/projects/unilidar-driver.html" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="qi-neo" />
+  <meta property="og:url" content="https://qi-neo.github.io/projects/unilidar-driver.html" />
+  <meta property="og:title" content="unilidar-driver · Unitree L1 激光雷达 ROS2 驱动" />
+  <meta property="og:description" content="自实现 UDP 协议解析，帧尾 + CRC32 定界，输出标准 PointCloud2 与 Imu。" />
+  <meta property="og:image" content="https://qi-neo.github.io/assets/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="/assets/style.css?v=7e379ec4" />
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">Q</span>
+      <span class="brand-text">qi-neo</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="/#about">关于</a>
+      <a href="/#projects">项目</a>
+      <a href="https://github.com/qi-neo" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+    <button id="theme-toggle" class="theme-toggle" type="button"
+            aria-label="切换到浅色主题" aria-pressed="true"
+            title="切换深色 / 浅色">
+      <span class="icon-dark" aria-hidden="true">☀️</span>
+      <span class="icon-light" aria-hidden="true">🌙</span>
+    </button>
+  </header>
+
+  <main id="main" class="page">
+    <nav class="crumbs" aria-label="面包屑">
+      <a href="/">首页</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="/#projects">开源项目</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">unilidar-driver</span>
+    </nav>
+
+    <p class="detail-eyebrow">ROS2 · 传感器驱动</p>
+    <h1 class="detail-title">unilidar-driver</h1>
+    <p class="detail-lead">
+      Unitree L1 激光雷达的 ROS2 驱动：自己解析 UDP 报文，输出标准
+      <code>sensor_msgs/PointCloud2</code> 与 <code>sensor_msgs/Imu</code> 话题。
+      不链接官方静态库 <code>libunitree_lidar_sdk.a</code> —— 协议解析、帧定界、
+      点云几何还原全部自己实现。
+    </p>
+
+    <div class="detail-meta">
+      <span class="chip">C++17</span>
+      <span class="chip">ROS2 Humble / Jazzy</span>
+      <span class="chip">MIT</span>
+      <span class="chip">v1.0.1</span>
+      <span class="chip">UDP</span>
+    </div>
+
+    <div class="detail-actions">
+      <a class="btn btn-primary" href="https://github.com/qi-neo/unilidar-driver" target="_blank" rel="noopener">查看源码 ↗</a>
+      <a class="btn btn-ghost" href="https://github.com/qi-neo/unilidar-driver/blob/main/docs/driver-design.md" target="_blank" rel="noopener">驱动设计文档 ↗</a>
+      <a class="btn btn-ghost" href="/#projects">返回项目列表</a>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat-cell"><div class="k">协议解析</div><div class="v">自实现</div></div>
+      <div class="stat-cell"><div class="k">帧定界</div><div class="v">CRC32</div></div>
+      <div class="stat-cell"><div class="k">离线自检</div><div class="v">63 项断言</div></div>
+      <div class="stat-cell"><div class="k">输出话题</div><div class="v">2 路</div></div>
+    </div>
+
+    <section class="detail-section" aria-labelledby="s-background">
+      <h2 class="section-title" id="s-background">为什么单独开一个仓库</h2>
+      <div class="prose">
+        <p>
+          雷达驱动是独立可复用的资产：凡是宇树 L1 的项目都用得上它，与具体应用（比如主动悬架）没有必然关系。
+          所以从 <a href="https://github.com/qi-neo/active-suspension-lidar-preview" target="_blank" rel="noopener">active-suspension-lidar-preview</a>
+          里拆了出来，两边各自演进：
+        </p>
+        <ul>
+          <li><strong>本仓库</strong>专注「把字节流变成可信数据」；</li>
+          <li><strong>悬架仓库</strong>专注「用这些数据做预瞄与控制」，只依赖本仓库发布的话题。</li>
+        </ul>
+        <p>
+          目标是做到<strong>可直接顶替官方节点</strong>：默认话题名、消息类型与官方一致，
+          下游代码不用改一行就能切过来。
+        </p>
+      </div>
+    </section>
+
+    <section class="detail-section" aria-labelledby="s-arch">
+      <h2 class="section-title" id="s-arch">数据流</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 920 330" role="img" aria-labelledby="arch-title">
+          <title id="arch-title">unilidar-driver 数据流：雷达 UDP 报文 → 收包 → 帧定界 → 字段解析 → 点云还原 → ROS2 话题</title>
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff" />
+            </marker>
+          </defs>
+
+          <!-- 第一行 -->
+          <g>
+            <rect x="20" y="46" width="250" height="76" rx="14" fill="#161b22" stroke="#30363d" />
+            <text x="145" y="78" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="600">Unitree L1 雷达</text>
+            <text x="145" y="100" text-anchor="middle" fill="#9da7b3" font-size="11.5">UDP 报文 · 雷达 6101 → 主机 6201</text>
+          </g>
+          <line x1="272" y1="84" x2="310" y2="84" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <g>
+            <rect x="320" y="46" width="250" height="76" rx="14" fill="#161b22" stroke="#30363d" />
+            <text x="445" y="78" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="600">udp_receiver 收包</text>
+            <text x="445" y="100" text-anchor="middle" fill="#9da7b3" font-size="11.5">环形缓冲 · 可收紧来源过滤</text>
+          </g>
+          <line x1="572" y1="84" x2="610" y2="84" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <g>
+            <rect x="620" y="46" width="280" height="76" rx="14" fill="#161b22" stroke="#30363d" />
+            <text x="760" y="78" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="600">frame_decoder 帧定界</text>
+            <text x="760" y="100" text-anchor="middle" fill="#9da7b3" font-size="11.5">帧尾标识 + CRC32（不依赖整包长度）</text>
+          </g>
+
+          <!-- 换行连接 -->
+          <path d="M 760 122 V 152 H 145 V 178" fill="none" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <!-- 第二行 -->
+          <g>
+            <rect x="20" y="190" width="250" height="76" rx="14" fill="#161b22" stroke="#30363d" />
+            <text x="145" y="222" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="600">packet_parser 字段解析</text>
+            <text x="145" y="244" text-anchor="middle" fill="#9da7b3" font-size="11.5">按协议头解出点的原始分量</text>
+          </g>
+          <line x1="272" y1="228" x2="310" y2="228" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <g>
+            <rect x="320" y="190" width="250" height="76" rx="14" fill="#161b22" stroke="#30363d" />
+            <text x="445" y="222" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="600">点云几何还原</text>
+            <text x="445" y="244" text-anchor="middle" fill="#9da7b3" font-size="11.5">x / y / z / intensity</text>
+          </g>
+          <line x1="572" y1="228" x2="610" y2="228" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arrow)" />
+
+          <g>
+            <rect x="620" y="190" width="280" height="76" rx="14" fill="#161b22" stroke="#58a6ff" stroke-opacity="0.5" />
+            <text x="760" y="222" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="600">ROS2 话题</text>
+            <text x="760" y="244" text-anchor="middle" fill="#9da7b3" font-size="11.5">/unilidar/cloud · /unilidar/imu</text>
+          </g>
+        </svg>
+        <figcaption>
+          协议核心（收包 → 定界 → 解析 → 还原）不依赖 ROS，可以在任何有 clang 的机器上编译并跑断言；
+          ROS 只是一层薄节点。
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="detail-section" aria-labelledby="s-highlights">
+      <h2 class="section-title" id="s-highlights">技术难点</h2>
+      <div class="highlights">
+        <article class="hl">
+          <span class="hl-num" aria-hidden="true">01</span>
+          <div>
+            <h3>官方给的包长不可信，改用「帧尾 + CRC32」定界</h3>
+            <p>
+              官方协议头文件里的字节数注释和它自己的字段定义对不上：3D 点云注释写 1036 B、按字段实算 1044 B；
+              IMU 注释写 156 B、实算 80 B。所以驱动<strong>不拿整包长度当判据</strong>，
+              只用帧尾标识加 CRC32 定界——随机数据恰好对齐的概率约 2⁻³²，足够可靠。
+              长度只拿来做诊断提示。
+            </p>
+          </div>
+        </article>
+
+        <article class="hl">
+          <span class="hl-num" aria-hidden="true">02</span>
+          <div>
+            <h3>IMU 四元数顺序官方自相矛盾，做成可配置项</h3>
+            <p>
+              固件没有公开文档约定 <code>quaternion[4]</code> 的排列，而官方 ROS2 包自身就是矛盾的：
+              Imu 消息按 <code>x,y,z,w</code> 填，TF 广播却按 <code>w,x,y,z</code> 填。填错会让姿态整体错乱。
+              本驱动做成参数 <code>quaternion_order</code>（<code>wxyz</code> / <code>xyzw</code>），
+              判定方法是把雷达静止水平放置，正确顺序下 w 应接近 ±1。
+            </p>
+          </div>
+        </article>
+
+        <article class="hl">
+          <span class="hl-num" aria-hidden="true">03</span>
+          <div>
+            <h3>协议核心与 ROS 解耦，不接硬件也能验证</h3>
+            <p>
+              解析逻辑不依赖 ROS，配一套 63 项断言的离线自检（<code>decoder_selftest</code>）并做过变异测试；
+              另有 <code>udp_probe</code> 探针，接上真实雷达 5 分钟内就能确认真实包长与 CRC 行为。
+              CI 跑双编译器 × sanitizer + UDP 回环集成测试。
+            </p>
+          </div>
+        </article>
+
+        <article class="hl">
+          <span class="hl-num" aria-hidden="true">04</span>
+          <div>
+            <h3>「明明在发却收不到」：QoS 与下游对齐</h3>
+            <p>
+              ROS2 默认 QoS 与 <code>SensorDataQoS</code> 不兼容时，下游订阅者会静默收不到数据。
+              驱动统一使用 <code>SensorDataQoS</code>，与 RViz、点云处理节点等常见下游保持一致。
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="detail-section" aria-labelledby="s-spec">
+      <h2 class="section-title" id="s-spec">关键指标</h2>
+      <div class="spec-wrap">
+        <table class="spec">
+          <caption class="sr-only">unilidar-driver 关键指标（部分待实测补充）</caption>
+          <tbody>
+            <tr><th scope="row">点云话题</th><td><code>/unilidar/cloud</code> · <code>sensor_msgs/PointCloud2</code>（x, y, z, intensity）</td></tr>
+            <tr><th scope="row">IMU 话题</th><td><code>/unilidar/imu</code> · <code>sensor_msgs/Imu</code></td></tr>
+            <tr><th scope="row">帧定界方式</th><td>帧尾标识 + CRC32，不依赖整包长度</td></tr>
+            <tr><th scope="row">离线自检</th><td>63 项断言，含变异测试</td></tr>
+            <tr><th scope="row">输出频率</th><td><span class="todo"></span></td></tr>
+            <tr><th scope="row">单帧点数</th><td><span class="todo"></span></td></tr>
+            <tr><th scope="row">端到端延迟</th><td><span class="todo"></span></td></tr>
+            <tr><th scope="row">实机验证平台</th><td><span class="todo"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="detail-section" aria-labelledby="s-media">
+      <h2 class="section-title" id="s-media">演示与素材</h2>
+      <div class="media-grid">
+        <div class="media-slot">
+          RViz2 点云截图
+          <span class="hint">待补充：实机采集后放这里</span>
+        </div>
+        <div class="media-slot">
+          <code>udp_probe</code> 终端输出
+          <span class="hint">待补充：真实包长 / CRC 诊断信息</span>
+        </div>
+        <div class="media-slot">
+          系统接线与网络拓扑
+          <span class="hint">待补充：雷达 ↔ 主机 ↔ ROS2</span>
+        </div>
+      </div>
+      <div class="prose media-note">
+        <p class="todo">
+          可以补的内容：实机点云 GIF、与官方驱动的话题对比、单帧解析耗时曲线。
+        </p>
+      </div>
+    </section>
+
+    <section class="detail-section" aria-labelledby="s-docs">
+      <h2 class="section-title" id="s-docs">相关文档</h2>
+      <div class="prose">
+        <p>
+          <a href="https://github.com/qi-neo/unilidar-driver/blob/main/docs/driver-design.md" target="_blank" rel="noopener">《如何编写一个激光雷达驱动》</a>
+          讲的是方法论：驱动的职责边界、四层架构、帧定界的几种做法与推荐组合，
+          以及如何在不接硬件的情况下验证。文中每个坑都来自这个项目的真实开发过程。
+        </p>
+      </div>
+    </section>
+
+    <section class="detail-section" aria-labelledby="s-contact">
+      <h2 class="section-title" id="s-contact">联系我</h2>
+      <div class="contact">
+        <p>
+          对激光雷达驱动、ROS2 传感器接入、嵌入式控制方向感兴趣，或者想聊聊合作与实习机会，欢迎直接发邮件。
+        </p>
+        <a class="contact-mail" href="mailto:1794194885@qq.com">1794194885@qq.com</a>
+      </div>
+      <div class="page-nav">
+        <a class="btn btn-ghost" href="/#projects">← 返回项目列表</a>
+        <a class="btn btn-ghost" href="https://github.com/qi-neo/unilidar-driver" target="_blank" rel="noopener">在 GitHub 上查看 ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year">2026</span> qi-neo · 用 ❤️ 和 C++ 搭建</p>
+    <p class="footer-sub">项目数据在构建时同步 · 由 GitHub Pages 托管</p>
+  </footer>
+
+  <script src="/assets/app.js?v=e21c03a3" defer></script>
+</body>
+</html>

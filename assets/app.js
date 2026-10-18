@@ -42,6 +42,31 @@ function langDotClass(lang) {
   return "lang-dot" + (key ? " lang-" + key : " lang-other");
 }
 
+/* 语言占比条：内联 SVG，避免用内联 style（CSP 不允许） */
+function buildLangbar(languages) {
+  if (!Array.isArray(languages) || !languages.length) return null;
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("class", "card-langbar");
+  svg.setAttribute("viewBox", "0 0 100 4");
+  svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  let x = 0;
+  languages.forEach((lang, index) => {
+    const width = index === languages.length - 1 ? 100 - x : Number(lang.percent) || 0;
+    const rect = document.createElementNS(NS, "rect");
+    rect.setAttribute("x", x.toFixed(2));
+    rect.setAttribute("y", "0");
+    rect.setAttribute("width", width.toFixed(2));
+    rect.setAttribute("height", "4");
+    rect.setAttribute("fill", lang.color);
+    svg.appendChild(rect);
+    x += width;
+  });
+  return svg;
+}
+
 /* ---------- 渲染：全部用 DOM API + textContent，仓库描述里的 < > 不会破版 ---------- */
 function renderRepos(repos, mode) {
   const grid = document.getElementById("projects-grid");
@@ -65,10 +90,30 @@ function renderRepos(repos, mode) {
     name.rel = "noopener";
     name.textContent = repo.name;
     top.append(icon, name);
+    if (repo.version) {
+      const version = document.createElement("span");
+      version.className = "card-version";
+      version.textContent = repo.version;
+      top.append(version);
+    }
 
     const desc = document.createElement("p");
     desc.className = "card-desc";
     desc.textContent = repo.description || "暂无描述";
+
+    let chips = null;
+    if (Array.isArray(repo.topics) && repo.topics.length) {
+      chips = document.createElement("div");
+      chips.className = "card-chips";
+      repo.topics.slice(0, 3).forEach((topic) => {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = topic;
+        chips.appendChild(chip);
+      });
+    }
+
+    const langbar = buildLangbar(repo.languages);
 
     const meta = document.createElement("div");
     meta.className = "card-meta";
@@ -89,15 +134,32 @@ function renderRepos(repos, mode) {
 
     const foot = document.createElement("div");
     foot.className = "card-foot";
-    const link = document.createElement("a");
-    link.className = "card-link";
-    link.href = repo.html_url;
-    link.target = "_blank";
-    link.rel = "noopener";
-    link.textContent = "在 GitHub 查看 ↗";
-    foot.append(link);
+    if (repo.detail_url) {
+      const detail = document.createElement("a");
+      detail.className = "card-link card-link-strong";
+      detail.href = repo.detail_url;
+      detail.textContent = "项目详情 →";
+      const github = document.createElement("a");
+      github.className = "card-link";
+      github.href = repo.html_url;
+      github.target = "_blank";
+      github.rel = "noopener";
+      github.textContent = "GitHub ↗";
+      foot.append(detail, github);
+    } else {
+      const link = document.createElement("a");
+      link.className = "card-link";
+      link.href = repo.html_url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "在 GitHub 查看 ↗";
+      foot.append(link);
+    }
 
-    card.append(top, desc, meta, foot);
+    card.append(top, desc);
+    if (chips) card.append(chips);
+    if (langbar) card.append(langbar);
+    card.append(meta, foot);
     frag.append(card);
   });
   grid.replaceChildren(frag);
@@ -145,6 +207,9 @@ function writeCache(repos) {
 
 /* ---------- 加载项目数据 ---------- */
 async function loadProjects() {
+  // 详情页 / 404 没有项目网格，不必发请求
+  if (!document.getElementById("projects-grid")) return;
+
   const cached = readCache();
 
   // 1) 有缓存就立刻画出来（静态内容已存在时这只是等价替换，避免白屏等待）
