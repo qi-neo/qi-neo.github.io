@@ -604,6 +604,34 @@ function initCarousels() {
   });
 }
 
+/* ---------- 滚动进场：进入视口后淡入上移 ---------- */
+function initReveal() {
+  const items = Array.prototype.slice.call(document.querySelectorAll("[data-reveal]"));
+  if (!items.length) return;
+
+  if (!("IntersectionObserver" in window)) {
+    items.forEach((el) => el.classList.add("is-in"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-in");
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: "0px 0px -10% 0px", threshold: 0.05 });
+
+  items.forEach((el) => {
+    // 首屏已经在视口里的直接显示，避免加载瞬间闪动
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.9) {
+      el.classList.add("is-in");
+    } else {
+      observer.observe(el);
+    }
+  });
+}
+
 /* ---------- 启动（各模块独立兜底，单点失败不影响整体） ---------- */
 function boot() {
   const yearEl = document.getElementById("year");
@@ -613,6 +641,7 @@ function boot() {
   try { initDock(); } catch (e) { console.warn(e); }
   try { initDeck(); } catch (e) { console.warn(e); }
   try { initCarousels(); } catch (e) { console.warn(e); }
+  try { initReveal(); } catch (e) { console.warn(e); }
   try { loadProjects(); } catch (e) { console.warn(e); }
 }
 
