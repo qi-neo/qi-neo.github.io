@@ -681,7 +681,7 @@ html.deck-page { scroll-snap-type: y proximity; }
 }
 
 /* 横向卡片：技术难点 */
-.carousel-wrap { position: relative; max-width: 820px; }
+.carousel-wrap { position: relative; }
 .carousel {
   display: flex; gap: 0;
   overflow-x: auto; overscroll-behavior-x: contain;
@@ -971,12 +971,17 @@ html.deck-page { scroll-snap-type: y proximity; }
   font-size: clamp(15px, 1.4vw, 18px);
   color: var(--text-dim); line-height: 1.65; max-width: 62ch;
 }
-.gallery-controls {
+.gallery-controls,
+.carousel-controls {
   position: relative;
   display: flex; align-items: center; justify-content: center;
-  gap: 16px; max-width: 1080px; margin: 20px auto 0; padding: 0 max(22px, 5vw);
+  gap: 16px; margin: 20px auto 0;
 }
-.gallery-arrows { position: absolute; right: max(22px, 5vw); display: flex; gap: 10px; }
+.gallery-controls { max-width: 1080px; padding: 0 max(22px, 5vw); }
+.carousel-controls { margin-top: 22px; }
+.gallery-arrows { position: absolute; right: 0; display: flex; gap: 10px; }
+.gallery-controls .carousel-dots,
+.carousel-controls .carousel-dots { margin-left: 0; }
 
 /* 圆点更接近 Apple：稍大、间距更松 */
 .carousel-dots { gap: 10px; }
@@ -1087,3 +1092,7 @@ html.deck-page { scroll-snap-type: y proximity; }
 .carousel-dot[aria-current="true"] { background: var(--text); }
 [data-theme="light"] .carousel-dot { background: rgba(0, 0, 0, 0.18); }
 [data-theme="light"] .carousel-dot[aria-current="true"] { background: rgba(0, 0, 0, 0.55); }
+
+/* 技术卡片：宽度与数据条对齐，内容垂直居中，正文限制行长 */
+.apple-page .hl-card { min-height: 300px; justify-content: center; }
+.apple-page .hl-card > p { max-width: 76ch; }
