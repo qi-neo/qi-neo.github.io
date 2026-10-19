@@ -1,7 +1,84 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-10-19T02:44:29Z",
+  "updated_at": "2026-10-19T08:53:53Z",
   "repos": [
+    {
+      "name": "active-suspension-lidar-preview",
+      "description": "基于激光雷达路面预瞄的主动悬架系统",
+      "language": "C++",
+      "stargazers_count": 1,
+      "updated_at": "2026-10-19T08:23:28Z",
+      "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
+      "icon": "📡",
+      "topics": [
+        "active-suspension",
+        "control-systems",
+        "cpp",
+        "embedded",
+        "lidar",
+        "pcl"
+      ],
+      "languages": [
+        {
+          "name": "C++",
+          "percent": 90.01,
+          "color": "#f34b7d"
+        },
+        {
+          "name": "Python",
+          "percent": 7.91,
+          "color": "#3572A5"
+        },
+        {
+          "name": "CMake",
+          "percent": 2.08,
+          "color": "#DA3434"
+        }
+      ],
+      "version": "v3.2.1",
+      "detail_url": null
+    },
+    {
+      "name": "unilidar-driver",
+      "description": "Unitree L1 LiDAR ROS2 driver with self-implemented UDP protocol parsing — no official static library",
+      "language": "C++",
+      "stargazers_count": 0,
+      "updated_at": "2026-10-19T03:21:31Z",
+      "html_url": "https://github.com/qi-neo/unilidar-driver",
+      "icon": "📡",
+      "topics": [
+        "cpp",
+        "driver",
+        "embedded",
+        "lidar",
+        "point-cloud",
+        "robotics"
+      ],
+      "languages": [
+        {
+          "name": "C++",
+          "percent": 85.01,
+          "color": "#f34b7d"
+        },
+        {
+          "name": "Python",
+          "percent": 9.53,
+          "color": "#3572A5"
+        },
+        {
+          "name": "Shell",
+          "percent": 3.85,
+          "color": "#89e051"
+        },
+        {
+          "name": "CMake",
+          "percent": 1.6,
+          "color": "#DA3434"
+        }
+      ],
+      "version": "v1.0.1",
+      "detail_url": null
+    },
     {
       "name": "maixcam-esp32-tcp-stepper-motor",
       "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
@@ -31,83 +108,6 @@
         }
       ],
       "version": null,
-      "detail_url": null
-    },
-    {
-      "name": "unilidar-driver",
-      "description": "Unitree L1 LiDAR ROS2 driver with self-implemented UDP protocol parsing — no official static library",
-      "language": "C++",
-      "stargazers_count": 0,
-      "updated_at": "2026-10-19T02:44:18Z",
-      "html_url": "https://github.com/qi-neo/unilidar-driver",
-      "icon": "📡",
-      "topics": [
-        "cpp",
-        "driver",
-        "embedded",
-        "lidar",
-        "point-cloud",
-        "robotics"
-      ],
-      "languages": [
-        {
-          "name": "C++",
-          "percent": 81.23,
-          "color": "#f34b7d"
-        },
-        {
-          "name": "Python",
-          "percent": 11.95,
-          "color": "#3572A5"
-        },
-        {
-          "name": "Shell",
-          "percent": 4.82,
-          "color": "#89e051"
-        },
-        {
-          "name": "CMake",
-          "percent": 2.01,
-          "color": "#DA3434"
-        }
-      ],
-      "version": "v1.0.1",
-      "detail_url": null
-    },
-    {
-      "name": "active-suspension-lidar-preview",
-      "description": "基于激光雷达路面预瞄的主动悬架系统",
-      "language": "C++",
-      "stargazers_count": 1,
-      "updated_at": "2026-10-19T02:44:16Z",
-      "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
-      "icon": "📡",
-      "topics": [
-        "active-suspension",
-        "control-systems",
-        "cpp",
-        "embedded",
-        "lidar",
-        "pcl"
-      ],
-      "languages": [
-        {
-          "name": "C++",
-          "percent": 89.5,
-          "color": "#f34b7d"
-        },
-        {
-          "name": "Python",
-          "percent": 8.38,
-          "color": "#3572A5"
-        },
-        {
-          "name": "CMake",
-          "percent": 2.12,
-          "color": "#DA3434"
-        }
-      ],
-      "version": "v3.2.1",
       "detail_url": null
     }
   ]
