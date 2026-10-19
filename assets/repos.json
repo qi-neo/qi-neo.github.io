@@ -1,13 +1,13 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-10-18T15:23:15Z",
+  "updated_at": "2026-10-19T02:44:29Z",
   "repos": [
     {
       "name": "maixcam-esp32-tcp-stepper-motor",
       "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
-      "language": "C++",
+      "language": "Python",
       "stargazers_count": 2,
-      "updated_at": "2026-10-18T14:36:00Z",
+      "updated_at": "2026-10-19T02:44:21Z",
       "html_url": "https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor",
       "icon": "⚙️",
       "topics": [
@@ -20,53 +20,17 @@
       ],
       "languages": [
         {
-          "name": "C++",
-          "percent": 71.6,
-          "color": "#f34b7d"
+          "name": "Python",
+          "percent": 51.65,
+          "color": "#3572A5"
         },
         {
-          "name": "Python",
-          "percent": 28.4,
-          "color": "#3572A5"
+          "name": "C++",
+          "percent": 48.35,
+          "color": "#f34b7d"
         }
       ],
       "version": null,
-      "detail_url": null
-    },
-    {
-      "name": "active-suspension-lidar-preview",
-      "description": "基于激光雷达路面预瞄的主动悬架系统",
-      "language": "C++",
-      "stargazers_count": 1,
-      "updated_at": "2026-10-18T14:17:44Z",
-      "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
-      "icon": "📡",
-      "topics": [
-        "active-suspension",
-        "control-systems",
-        "cpp",
-        "embedded",
-        "lidar",
-        "pcl"
-      ],
-      "languages": [
-        {
-          "name": "C++",
-          "percent": 88.94,
-          "color": "#f34b7d"
-        },
-        {
-          "name": "Python",
-          "percent": 8.87,
-          "color": "#3572A5"
-        },
-        {
-          "name": "CMake",
-          "percent": 2.19,
-          "color": "#DA3434"
-        }
-      ],
-      "version": "v3.2.1",
       "detail_url": null
     },
     {
@@ -74,7 +38,7 @@
       "description": "Unitree L1 LiDAR ROS2 driver with self-implemented UDP protocol parsing — no official static library",
       "language": "C++",
       "stargazers_count": 0,
-      "updated_at": "2026-10-15T08:43:53Z",
+      "updated_at": "2026-10-19T02:44:18Z",
       "html_url": "https://github.com/qi-neo/unilidar-driver",
       "icon": "📡",
       "topics": [
@@ -88,26 +52,62 @@
       "languages": [
         {
           "name": "C++",
-          "percent": 78.75,
+          "percent": 81.23,
           "color": "#f34b7d"
         },
         {
           "name": "Python",
-          "percent": 14.17,
+          "percent": 11.95,
           "color": "#3572A5"
         },
         {
           "name": "Shell",
-          "percent": 4.64,
+          "percent": 4.82,
           "color": "#89e051"
         },
         {
           "name": "CMake",
-          "percent": 2.43,
+          "percent": 2.01,
           "color": "#DA3434"
         }
       ],
       "version": "v1.0.1",
+      "detail_url": null
+    },
+    {
+      "name": "active-suspension-lidar-preview",
+      "description": "基于激光雷达路面预瞄的主动悬架系统",
+      "language": "C++",
+      "stargazers_count": 1,
+      "updated_at": "2026-10-19T02:44:16Z",
+      "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
+      "icon": "📡",
+      "topics": [
+        "active-suspension",
+        "control-systems",
+        "cpp",
+        "embedded",
+        "lidar",
+        "pcl"
+      ],
+      "languages": [
+        {
+          "name": "C++",
+          "percent": 89.5,
+          "color": "#f34b7d"
+        },
+        {
+          "name": "Python",
+          "percent": 8.38,
+          "color": "#3572A5"
+        },
+        {
+          "name": "CMake",
+          "percent": 2.12,
+          "color": "#DA3434"
+        }
+      ],
+      "version": "v3.2.1",
       "detail_url": null
     }
   ]
