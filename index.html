@@ -156,7 +156,7 @@
           </article>
           <article class="gallery-card">
             <p class="gallery-kicker">可验证性</p>
-            <h3>63 项断言，不接硬件也能跑</h3>
+            <h3>69 项断言，不接硬件也能跑</h3>
             <p>协议核心与 ROS 解耦，离线自检 + 变异测试；接上真实雷达先用探针确认真实包长。</p>
           </article>
           <article class="gallery-card">
@@ -286,7 +286,7 @@
         <div class="stat-strip" data-reveal>
           <div class="stat-cell"><div class="k">协议解析</div><div class="v">自实现</div></div>
           <div class="stat-cell"><div class="k">帧定界</div><div class="v">CRC32</div></div>
-          <div class="stat-cell"><div class="k">离线自检</div><div class="v">63 项断言</div></div>
+          <div class="stat-cell"><div class="k">离线自检</div><div class="v">69 项断言</div></div>
           <div class="stat-cell"><div class="k">输出话题</div><div class="v">2 路</div></div>
         </div>
 
@@ -316,7 +316,7 @@
               <span class="hl-num" aria-hidden="true">03</span>
               <h3>协议核心与 ROS 解耦，不接硬件也能验证</h3>
               <p>
-                解析逻辑不依赖 ROS，配一套 63 项断言的离线自检（<code>decoder_selftest</code>）并做过变异测试；
+                解析逻辑不依赖 ROS，配一套 69 项断言的离线自检（<code>decoder_selftest</code>）并做过变异测试；
                 另有 <code>udp_probe</code> 探针，接上真实雷达 5 分钟内就能确认真实包长与 CRC 行为。
                 CI 跑双编译器 × sanitizer + UDP 回环集成测试。
               </p>
@@ -353,7 +353,7 @@
             <div class="spec-row"><dt>点云话题</dt><dd><code>/unilidar/cloud</code> · <code>sensor_msgs/PointCloud2</code>（x, y, z, intensity）</dd></div>
             <div class="spec-row"><dt>IMU 话题</dt><dd><code>/unilidar/imu</code> · <code>sensor_msgs/Imu</code></dd></div>
             <div class="spec-row"><dt>帧定界</dt><dd>帧尾标识 + CRC32，不依赖整包长度</dd></div>
-            <div class="spec-row"><dt>离线自检</dt><dd>63 项断言，含变异测试</dd></div>
+            <div class="spec-row"><dt>离线自检</dt><dd>69 项断言，含变异测试</dd></div>
           </dl>
         </div>
       </div>
