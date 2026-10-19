@@ -3,13 +3,15 @@
 """
 qi-neo.github.io 构建脚本
 
-做四件事（全部幂等，重复运行结果一致）：
+做五件事（全部幂等，重复运行结果一致）：
 
 1. 从 GitHub API 抓取公开仓库，写入 assets/repos.json
 2. 把项目卡片静态渲染进 index.html 的 REPOS:START / REPOS:END 之间
    （这样不执行 JS 的爬虫、弱网首屏、JS 挂掉时都有内容）
 3. 重新计算内联脚本的 sha256，回填 CSP 里的 script-src 白名单
 4. 按文件内容哈希刷新资源版本号（?v=），绕过 Pages 的 10 分钟缓存
+5. 仅在 index.html / assets/repos.json 内容真的变化时刷新 sitemap 的 lastmod，
+   避免每天定时任务都把日期改成"今天"、产生永远无法收敛的 bot commit
 
 用法：
     python3 scripts/build.py              # 联网抓取
@@ -388,17 +390,20 @@ def main():
 
     payload = {"username": USERNAME, "updated_at": stamp, "repos": repos}
     new_json = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
-    if not REPOS_JSON.exists() or REPOS_JSON.read_text("utf-8") != new_json:
+    repos_changed = not REPOS_JSON.exists() or REPOS_JSON.read_text("utf-8") != new_json
+    if repos_changed:
         REPOS_JSON.write_text(new_json, encoding="utf-8")
         print("[build] assets/repos.json 已更新")
     else:
         print("[build] assets/repos.json 无变化")
 
-    index_text = INDEX.read_text("utf-8")
-    index_text = update_index(index_text, repos)
+    old_index_text = INDEX.read_text("utf-8")
+    index_text = update_index(old_index_text, repos)
     index_text = update_asset_versions(index_text)
     index_text = update_csp(index_text)
-    INDEX.write_text(index_text, encoding="utf-8")
+    index_changed = index_text != old_index_text
+    if index_changed:
+        INDEX.write_text(index_text, encoding="utf-8")
 
     # 其余页面（404、projects/*.html）只需刷新版本号与 CSP 哈希
     extra_pages = [ROOT / "404.html"] + sorted((ROOT / "projects").glob("*.html"))
@@ -410,12 +415,20 @@ def main():
         text = update_csp(text)
         page.write_text(text, encoding="utf-8")
 
+    # sitemap 的 lastmod 只在 index.html / repos.json 内容真的变化时更新。
+    # 旧实现每次都写成"今天"，配合每日 GitHub Actions 会每天产生一次 bot commit
+    # （内容其实没变）；这里保持"最近一次内容变更日期"语义。
+    content_changed = index_changed or repos_changed
     if SITEMAP.exists():
-        today = datetime.date.today().isoformat()
-        text = SITEMAP.read_text("utf-8")
-        if "<lastmod>" in text:
-            text = re.sub(r"<lastmod>[^<]*</lastmod>", f"<lastmod>{today}</lastmod>", text)
-        SITEMAP.write_text(text, encoding="utf-8")
+        if content_changed:
+            today = datetime.date.today().isoformat()
+            text = SITEMAP.read_text("utf-8")
+            if "<lastmod>" in text:
+                text = re.sub(r"<lastmod>[^<]*</lastmod>", f"<lastmod>{today}</lastmod>", text)
+                SITEMAP.write_text(text, encoding="utf-8")
+                print(f"[build] 内容有变化，sitemap lastmod -> {today}")
+        else:
+            print("[build] 内容无变化，sitemap 保持不变")
 
     detail_pages = [p for p in (ROOT / "projects").glob("*.html")]
     print(
