@@ -7,6 +7,11 @@
    ========================================================= */
 "use strict";
 
+/* 渐进增强开关：只有脚本真正执行到这里，CSS 才会隐藏 [data-reveal] 等待淡入。
+   如果本文件加载失败 / 语法错误 / 被 CSP 拦截，这个 class 不会被加上，
+   正文保持默认可见——修复"JS 挂掉导致整页空白"。 */
+document.documentElement.classList.add("js");
+
 const REPOS_URL = "assets/repos.json";
 const CACHE_KEY = "qi-neo-repos-v2";
 const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 小时内直接用本地缓存，不再发请求

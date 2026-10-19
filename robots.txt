@@ -1,5 +1,6 @@
 # qi-neo 个人主页 爬虫规则
-# 放行主流搜索引擎以保证基本可发现性；封杀高频 SEO/抓取机器人及通用 HTTP 客户端。
+# 放行主流搜索引擎 + 社交链接预览抓取，保证可发现性与分享卡片；
+# 封杀高频 SEO/采集机器人及通用 HTTP 客户端。
 
 User-agent: Googlebot
 Allow: /
@@ -11,6 +12,29 @@ User-agent: Baiduspider
 Allow: /
 
 User-agent: Applebot
+Allow: /
+
+# 链接预览（unfurl）：Twitter/X、Facebook、Slack、Telegram、WhatsApp、Discord、LinkedIn。
+# 这些 UA 会落到下面的 User-agent: * 规则，必须显式允许，否则分享出去的链接没有 OG 卡片。
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: LinkedInBot
 Allow: /
 
 User-agent: *

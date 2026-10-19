@@ -36,11 +36,12 @@ GitHub Actions（每天 / 手动触发）
 | 关于 | 大标题 + 正文 + 技术标签 |
 | 开源项目 | 卡片（版本徽章 / topics / 语言占比条），移动端横向滑动 |
 | 技术 | 数据条 + 横向卡片轮播（一屏一张） |
-| 技术规格 | 两列规格表（部分待补充） |
+| 技术规格 | 两列规格表（点云/IMU 话题、帧定界、离线自检项数） |
 | 联系 | 大号邮箱 + GitHub / 设计文档链接 |
 | 页脚 | 三列导航 + 版权 |
 
-细节：滚动进场淡入（`prefers-reduced-motion` 下关闭）、`no-js` 时元素默认可见、
+细节：滚动进场淡入（`prefers-reduced-motion` 下关闭）；隐藏由 `app.js` 顶部加的
+`.js` 类启用，JS 加载/执行失败时元素默认可见（不会白屏）；
 锚点跳转避开吸顶导航（`scroll-margin-top`）。
 
 **加区块**：复制一个 `<section class="ap-band">` 结构，再加到 `.localnav-links` 与页脚里即可。
@@ -99,6 +100,9 @@ python3 -m http.server 8000
 
 ## 说明
 
-- `robots.txt` 目前只放行 Google / Bing / 百度 / Apple，其余爬虫禁止；改放行策略直接改该文件。
+- `robots.txt` 放行主流搜索引擎，同时显式放行社交链接预览抓取
+  （Twitterbot / facebookexternalhit / Slackbot / TelegramBot / WhatsApp / Discordbot / LinkedInBot），
+  保证分享出去的链接能生成 OG 卡片；对 AhrefsBot / SemrushBot / GPTBot 等采集机器人保持封禁。
+  改放行策略直接改该文件。
 - 页面已不再依赖 WorkBuddy Cloud SDK（原先 72 KB 的第三方脚本已移除），
   如需回滚可查看 git 历史中的 `2da0cdb`。
