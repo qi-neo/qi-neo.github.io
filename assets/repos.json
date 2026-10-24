@@ -1,13 +1,13 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-10-20T08:33:24Z",
+  "updated_at": "2026-10-24T08:08:33Z",
   "repos": [
     {
       "name": "active-suspension-lidar-preview",
       "description": "基于激光雷达路面预瞄的主动悬架系统",
       "language": "C++",
       "stargazers_count": 1,
-      "updated_at": "2026-10-20T02:41:51Z",
+      "updated_at": "2026-10-24T07:32:59Z",
       "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
       "icon": "📡",
       "topics": [
@@ -21,17 +21,17 @@
       "languages": [
         {
           "name": "C++",
-          "percent": 90.01,
+          "percent": 90.72,
           "color": "#f34b7d"
         },
         {
           "name": "Python",
-          "percent": 7.91,
+          "percent": 7.34,
           "color": "#3572A5"
         },
         {
           "name": "CMake",
-          "percent": 2.08,
+          "percent": 1.94,
           "color": "#DA3434"
         }
       ],
@@ -40,10 +40,10 @@
     },
     {
       "name": "unilidar-driver",
-      "description": "Unitree L1 LiDAR ROS2 driver with self-implemented UDP protocol parsing — no official static library",
+      "description": "Unitree L1 LiDAR ROS2 driver: self-implemented serial (CH340 USB-UART, default) + UDP protocol parsing — no official static library",
       "language": "C++",
       "stargazers_count": 0,
-      "updated_at": "2026-10-19T03:21:31Z",
+      "updated_at": "2026-10-24T06:52:24Z",
       "html_url": "https://github.com/qi-neo/unilidar-driver",
       "icon": "📡",
       "topics": [
@@ -57,22 +57,22 @@
       "languages": [
         {
           "name": "C++",
-          "percent": 85.01,
+          "percent": 87.45,
           "color": "#f34b7d"
         },
         {
           "name": "Python",
-          "percent": 9.53,
+          "percent": 8.09,
           "color": "#3572A5"
         },
         {
           "name": "Shell",
-          "percent": 3.85,
+          "percent": 3.01,
           "color": "#89e051"
         },
         {
           "name": "CMake",
-          "percent": 1.6,
+          "percent": 1.44,
           "color": "#DA3434"
         }
       ],
@@ -83,8 +83,8 @@
       "name": "maixcam-esp32-tcp-stepper-motor",
       "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
       "language": "Python",
-      "stargazers_count": 2,
-      "updated_at": "2026-10-19T02:44:21Z",
+      "stargazers_count": 3,
+      "updated_at": "2026-10-23T14:17:20Z",
       "html_url": "https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor",
       "icon": "⚙️",
       "topics": [
