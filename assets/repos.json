@@ -1,7 +1,48 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-10-27T09:00:32Z",
+  "updated_at": "2026-10-28T09:40:25Z",
   "repos": [
+    {
+      "name": "unilidar-driver",
+      "description": "Unitree L1 LiDAR ROS2 driver: self-implemented serial (CH340 USB-UART, default) — no official static library",
+      "language": "C++",
+      "stargazers_count": 1,
+      "updated_at": "2026-10-28T06:49:23Z",
+      "html_url": "https://github.com/qi-neo/unilidar-driver",
+      "icon": "📡",
+      "topics": [
+        "cpp",
+        "driver",
+        "embedded",
+        "lidar",
+        "point-cloud",
+        "robotics"
+      ],
+      "languages": [
+        {
+          "name": "C++",
+          "percent": 92.91,
+          "color": "#f34b7d"
+        },
+        {
+          "name": "Python",
+          "percent": 3.9,
+          "color": "#3572A5"
+        },
+        {
+          "name": "CMake",
+          "percent": 1.74,
+          "color": "#DA3434"
+        },
+        {
+          "name": "Shell",
+          "percent": 1.45,
+          "color": "#89e051"
+        }
+      ],
+      "version": "v1.0.1",
+      "detail_url": null
+    },
     {
       "name": "active-suspension-lidar-preview",
       "description": "基于激光雷达路面预瞄的主动悬架系统",
@@ -36,47 +77,6 @@
         }
       ],
       "version": "v3.2.4",
-      "detail_url": null
-    },
-    {
-      "name": "unilidar-driver",
-      "description": "Unitree L1 LiDAR ROS2 driver: self-implemented serial (CH340 USB-UART, default) — no official static library",
-      "language": "C++",
-      "stargazers_count": 0,
-      "updated_at": "2026-10-26T12:08:58Z",
-      "html_url": "https://github.com/qi-neo/unilidar-driver",
-      "icon": "📡",
-      "topics": [
-        "cpp",
-        "driver",
-        "embedded",
-        "lidar",
-        "point-cloud",
-        "robotics"
-      ],
-      "languages": [
-        {
-          "name": "C++",
-          "percent": 92.91,
-          "color": "#f34b7d"
-        },
-        {
-          "name": "Python",
-          "percent": 3.9,
-          "color": "#3572A5"
-        },
-        {
-          "name": "CMake",
-          "percent": 1.74,
-          "color": "#DA3434"
-        },
-        {
-          "name": "Shell",
-          "percent": 1.45,
-          "color": "#89e051"
-        }
-      ],
-      "version": "v1.0.1",
       "detail_url": null
     },
     {
