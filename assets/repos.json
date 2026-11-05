@@ -1,13 +1,13 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-11-05T08:11:34Z",
+  "updated_at": "2026-11-05T09:11:15Z",
   "repos": [
     {
       "name": "maixcam-esp32-tcp-stepper-motor",
       "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
       "language": "Python",
       "stargazers_count": 3,
-      "updated_at": "2026-11-05T08:11:24Z",
+      "updated_at": "2026-11-05T09:01:14Z",
       "html_url": "https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor",
       "icon": "⚙️",
       "topics": [
@@ -21,17 +21,17 @@
       "languages": [
         {
           "name": "Python",
-          "percent": 64.25,
+          "percent": 64.97,
           "color": "#3572A5"
         },
         {
           "name": "C++",
-          "percent": 34.14,
+          "percent": 33.46,
           "color": "#f34b7d"
         },
         {
           "name": "C",
-          "percent": 1.61,
+          "percent": 1.58,
           "color": "#555555"
         }
       ],
@@ -43,7 +43,7 @@
       "description": "基于激光雷达路面预瞄的主动悬架系统",
       "language": "C++",
       "stargazers_count": 2,
-      "updated_at": "2026-11-05T08:11:22Z",
+      "updated_at": "2026-11-05T09:00:16Z",
       "html_url": "https://github.com/qi-neo/active-suspension-lidar-preview",
       "icon": "📡",
       "topics": [
@@ -57,22 +57,22 @@
       "languages": [
         {
           "name": "C++",
-          "percent": 88.24,
+          "percent": 87.04,
           "color": "#f34b7d"
         },
         {
           "name": "Python",
-          "percent": 8.23,
+          "percent": 9.48,
           "color": "#3572A5"
         },
         {
           "name": "CMake",
-          "percent": 2.72,
+          "percent": 2.69,
           "color": "#DA3434"
         },
         {
           "name": "Shell",
-          "percent": 0.81,
+          "percent": 0.8,
           "color": "#89e051"
         }
       ],
