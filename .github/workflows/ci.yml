@@ -1,0 +1,34 @@
+name: CI
+
+# 主页是纯静态站点（GitHub Pages）。本工作流只做轻量静态校验，
+# 不部署——部署由 Pages 自身处理。
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  csp:
+    name: CSP 内联脚本白名单校验
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # P1-7：内联 <script>（首屏主题初始化、结构化数据）用 sha256 白名单放行。
+      # 改了内联脚本内容却忘了同步 CSP，浏览器会静默拒绝执行、且无本地报错。
+      # 这里双向比对内联脚本 hash 与 CSP 白名单，把漂移挡在合并前。
+      - name: 校验 CSP 内联脚本 hash
+        run: python3 scripts/check_csp.py
