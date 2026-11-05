@@ -12,6 +12,7 @@ qi-neo.github.io 构建脚本
 4. 按文件内容哈希刷新资源版本号（?v=），绕过 Pages 的 10 分钟缓存
 5. 仅在 index.html / assets/repos.json 内容真的变化时刷新 sitemap 的 lastmod，
    避免每天定时任务都把日期改成"今天"、产生永远无法收敛的 bot commit
+6. P2-3：写回前断言页面不含「NN assertions passed」类写死的自检计数
 
 用法：
     python3 scripts/build.py              # 联网抓取
@@ -31,6 +32,11 @@ import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+# 同目录模块（直接 python3 scripts/build.py 时 sys.path[0] 即 scripts/，
+# 这里显式补一次，兼容被 import 或由其他 cwd 调用的情况）
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from check_hardcoded_counts import assert_no_hardcoded_counts  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 USERNAME = "qi-neo"
@@ -401,6 +407,11 @@ def main():
     index_text = update_index(old_index_text, repos)
     index_text = update_asset_versions(index_text)
     index_text = update_csp(index_text)
+
+    # P2-3：定时同步只刷新仓库元数据，不会刷新写死的自检计数。
+    # 生成结果里一旦出现这类硬编码，直接终止构建、不写回，避免数字长期漂移。
+    assert_no_hardcoded_counts(index_text, "index.html")
+
     index_changed = index_text != old_index_text
     if index_changed:
         INDEX.write_text(index_text, encoding="utf-8")

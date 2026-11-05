@@ -32,3 +32,12 @@ jobs:
       # 这里双向比对内联脚本 hash 与 CSP 白名单，把漂移挡在合并前。
       - name: 校验 CSP 内联脚本 hash
         run: python3 scripts/check_csp.py
+
+      # P2-3：定时同步只刷新仓库元数据，写死的自检计数永远不会被更新。
+      # 这里禁止页面再出现「NN assertions passed / NN 项断言」形式的硬编码。
+      - name: 校验无写死自检计数（P2-3）
+        run: python3 scripts/check_hardcoded_counts.py
+
+      # P2-8：展示仓保留姓名 + 联系邮箱（白名单），但不得出现学号 / 真实 SSID。
+      - name: 校验展示仓隐私边界（P2-8）
+        run: python3 scripts/check_privacy.py

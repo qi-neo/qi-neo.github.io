@@ -43,7 +43,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          # P2-3：只暂存构建产物，不用 git add -A。
+          # 后者会把 runner 上意外生成的临时文件 / 调试产物一并提交，
+          # 而定时同步本来只该改下面这几个文件。
+          git add -- index.html assets/repos.json sitemap.xml 404.html
+          if [ -d projects ]; then git add -- projects/; fi
           if git diff --cached --quiet; then
             echo "数据和页面都没有变化，跳过提交"
           else

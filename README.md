@@ -106,3 +106,20 @@ python3 -m http.server 8000
   改放行策略直接改该文件。
 - 页面已不再依赖 WorkBuddy Cloud SDK（原先 72 KB 的第三方脚本已移除），
   如需回滚可查看 git 历史中的 `2da0cdb`。
+
+## CI 静态校验（push / PR 自动跑）
+
+| 脚本 | 作用 |
+|---|---|
+| `scripts/check_csp.py` | 内联脚本 sha256 ↔ CSP 白名单双向比对（P1-7） |
+| `scripts/check_hardcoded_counts.py` | 禁止「NN assertions passed」类写死自检计数（P2-3）；`build.py` 写回 index.html 前也会调用同一断言 |
+| `scripts/check_privacy.py` | 展示仓隐私边界：无学号 / 真实 SSID，姓名与联系邮箱属白名单（P2-8） |
+
+`update-repos.yml` 的定时同步只暂存 `index.html` / `assets/repos.json` / `sitemap.xml` / `404.html` / `projects/`，
+不再用 `git add -A`，避免机器人把意外生成的文件一并提交（P2-3）。
+
+## 许可
+
+本仓库内容按 [MIT](LICENSE) 许可。展示仓保留姓名与联系邮箱用于求职联系；
+项目仓（代码、论文、硬件 BOM、固件）的隐私与脱敏边界见
+[主动悬架仓库的 `docs/PRIVACY.md`](https://github.com/qi-neo/active-suspension-lidar-preview/blob/main/docs/PRIVACY.md)。
