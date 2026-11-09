@@ -1,6 +1,6 @@
 # qi-neo.github.io
 
-王瑛琦（qi-neo）的个人主页 —— 嵌入式软件 / C++ / ROS2 传感器驱动。
+qi-neo 的个人主页 —— 嵌入式软件 / C++ / ROS2 传感器驱动。
 
 - 线上地址：**https://qi-neo.github.io/**
 - 托管：GitHub Pages（`main` 分支根目录，push 后自动构建，约 30–60 秒生效）
