@@ -1,7 +1,43 @@
 {
   "username": "qi-neo",
-  "updated_at": "2026-11-06T10:52:51Z",
+  "updated_at": "2026-11-10T11:12:27Z",
   "repos": [
+    {
+      "name": "maixcam-esp32-tcp-stepper-motor",
+      "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
+      "language": "Python",
+      "stargazers_count": 3,
+      "updated_at": "2026-11-09T14:55:30Z",
+      "html_url": "https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor",
+      "icon": "⚙️",
+      "topics": [
+        "arduino",
+        "embedded",
+        "esp32",
+        "maxicam",
+        "python",
+        "socket"
+      ],
+      "languages": [
+        {
+          "name": "Python",
+          "percent": 64.97,
+          "color": "#3572A5"
+        },
+        {
+          "name": "C++",
+          "percent": 33.46,
+          "color": "#f34b7d"
+        },
+        {
+          "name": "C",
+          "percent": 1.58,
+          "color": "#555555"
+        }
+      ],
+      "version": null,
+      "detail_url": null
+    },
     {
       "name": "active-suspension-lidar-preview",
       "description": "基于激光雷达路面预瞄的主动悬架系统",
@@ -82,42 +118,6 @@
         }
       ],
       "version": "v1.0.1",
-      "detail_url": null
-    },
-    {
-      "name": "maixcam-esp32-tcp-stepper-motor",
-      "description": "Maixcam Pro + ESP32 通过 socket TCP 通信控制步进电机",
-      "language": "Python",
-      "stargazers_count": 3,
-      "updated_at": "2026-11-05T15:20:26Z",
-      "html_url": "https://github.com/qi-neo/maixcam-esp32-tcp-stepper-motor",
-      "icon": "⚙️",
-      "topics": [
-        "arduino",
-        "embedded",
-        "esp32",
-        "maxicam",
-        "python",
-        "socket"
-      ],
-      "languages": [
-        {
-          "name": "Python",
-          "percent": 64.97,
-          "color": "#3572A5"
-        },
-        {
-          "name": "C++",
-          "percent": 33.46,
-          "color": "#f34b7d"
-        },
-        {
-          "name": "C",
-          "percent": 1.58,
-          "color": "#555555"
-        }
-      ],
-      "version": null,
       "detail_url": null
     }
   ]
